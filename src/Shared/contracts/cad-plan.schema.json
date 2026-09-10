@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/contracts/cad-plan.schema.json",
+  "title": "CadPlan",
+  "type": "object",
+  "required": ["version", "document_type", "operations"],
+  "properties": {
+    "version": { "const": "0.1" },
+    "document_type": { "enum": ["part", "assembly", "drawing"] },
+    "summary": { "type": "string" },
+    "requires_confirmation": { "type": "boolean" },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "intent"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string" },
+          "intent": { "type": "string" },
+          "inputs": { "type": "object" },
+          "depends_on": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
