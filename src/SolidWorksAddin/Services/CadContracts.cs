@@ -63,6 +63,9 @@ namespace SwCursor.SolidWorksAddin.Services
 
     public sealed class CadExecutionResult
     {
+        public string failure_phase { get; set; }
+        public long elapsed_ms { get; set; }
+        public List<string> trace { get; set; } = new List<string>();
         public bool success { get; set; }
         public bool rollback_verified { get; set; }
         public CadVerificationReply local_verification { get; set; }

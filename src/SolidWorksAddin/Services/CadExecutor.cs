@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Diagnostics;
 using System.Threading;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
@@ -34,9 +35,37 @@ namespace SwCursor.SolidWorksAddin.Services
             public CadVerificationSnapshot Plate;
         }
 
-        // Synchronous on the SOLIDWORKS UI thread: never leave an undo group open across await.
-        public CadExecutionResult Execute(CadPlan plan, ModelContextSnapshot reviewedContext)
+        private sealed class ExecutionTrace
         {
+            public readonly Stopwatch Clock = Stopwatch.StartNew();
+            public readonly List<string> Events = new List<string>();
+            public string Phase = "validation";
+            public Action<string> Progress;
+            public void Mark(string phase, string message)
+            {
+                Phase = phase;
+                Events.Add(Clock.ElapsedMilliseconds + " ms | " + phase + " | " + message);
+                // UI painting must never break the native transaction.
+                try { Progress?.Invoke(message); } catch { }
+            }
+        }
+
+        // Synchronous on the SOLIDWORKS UI thread: no await within a mutation.
+        public CadExecutionResult Execute(CadPlan plan, ModelContextSnapshot reviewedContext, Action<string> progress = null)
+        {
+            var trace = new ExecutionTrace { Progress = progress };
+            CadExecutionResult result;
+            try { result = ExecuteCore(plan, reviewedContext, trace); }
+            catch (Exception ex) { result = Fail("CAD operation stopped: " + ex.Message); }
+            if (!result.success && result.failure_phase == null) result.failure_phase = trace.Phase;
+            result.elapsed_ms = trace.Clock.ElapsedMilliseconds;
+            result.trace = trace.Events;
+            return result;
+        }
+
+        private CadExecutionResult ExecuteCore(CadPlan plan, ModelContextSnapshot reviewedContext, ExecutionTrace trace)
+        {
+            trace.Mark("validation", "Kiểm tra kế hoạch và tài liệu...");
             if (Thread.CurrentThread.ManagedThreadId != _threadId)
                 return Fail("CAD execution must run on the SOLIDWORKS UI thread.");
             string error = CadValidation.ValidatePlan(plan);
@@ -47,8 +76,10 @@ namespace SwCursor.SolidWorksAddin.Services
             error = PartStateIssue(model);
             if (error != null) return Fail(error);
             CadOperation op = plan.operations[0];
+            trace.Mark("preflight", "Kiểm tra điều kiện tạo hoặc sửa Part...");
             error = Preflight(model, op);
             if (error != null) return Fail(error);
+            trace.Mark("checkpoint", "Ghi nhận trạng thái trước thao tác...");
             Baseline baseline = CaptureBaseline(model);
             if (baseline == null) return Fail("Cannot read the pre-edit checkpoint. No changes were made.");
 
@@ -59,21 +90,25 @@ namespace SwCursor.SolidWorksAddin.Services
             CadExecutionResult result;
             try
             {
+                trace.Mark("begin_undo", "Bắt đầu thao tác CAD...");
                 model.Extension.StartRecordingUndoObject();
                 recording = true;
                 model.ShowFeatureErrorDialog = false;
                 _swApp.SetUserPreferenceToggle((int)swUserPreferenceToggle_e.swInputDimValOnCreate, false);
-                result = op.kind == "create_plate" ? CreatePlate(model, op) : ModifyPlateThickness(model, op);
+                result = op.kind == "create_plate" ? CreatePlate(model, op, trace) : ModifyPlateThickness(model, op, trace);
+                if (!result.success) result.failure_phase = trace.Phase;
                 if (result.success)
                 {
+                    trace.Mark("verify", "Đối chiếu kích thước và thể tích...");
                     result.local_verification = CadValidation.Verify(result.verification);
                     result.success = result.local_verification.passed;
-                    if (!result.success) result.message = result.local_verification.message;
+                    if (!result.success) { result.message = result.local_verification.message; result.failure_phase = trace.Phase; }
                 }
             }
             catch (Exception ex)
             {
                 result = Fail("CAD operation failed: " + ex.Message);
+                result.failure_phase = trace.Phase;
             }
             finally
             {
@@ -86,6 +121,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 } catch { }
                 if (recording)
                 {
+                    trace.Mark("finish_undo", "Kết thúc nhóm thao tác...");
                     try { finished = model.Extension.FinishRecordingUndoObject2("Mechra: " + plan.summary, false); }
                     catch { finished = false; }
                 }
@@ -102,6 +138,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 if (changed)
                 {
                     try {
+                        trace.Mark("rollback", "Khôi phục trạng thái trước thao tác...");
                         model.EditUndo2(1);
                         bool rollbackRebuild = model.EditRebuild3();
                         result.rollback_verified = rollbackRebuild && MatchesBaseline(model, baseline);
@@ -112,6 +149,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 }
                 return result;
             }
+            trace.Mark("complete", "Đã kiểm chứng Part native.");
             result.message = "Native operation rebuilt and verified. To revert, select the named Mechra transaction in the SOLIDWORKS Undo list.";
             return result;
         }
@@ -181,8 +219,9 @@ namespace SwCursor.SolidWorksAddin.Services
                     return "Only the existing Mechra blind extrusion is supported.";
                 bool warning;
                 if (feature.GetErrorCode2(out warning) != 0) return "Resolve the existing feature error before editing.";
-                double width, height;
-                if (!MeasureRectangleSketchSides(sketch, out width, out height)) return "The plate sketch is no longer a rectangle.";
+                RectangleMeasurement rectangle = ReadRectangle(sketch);
+                if (!rectangle.valid) return "The plate sketch is not a supported rectangle: " + rectangle.message;
+                double width = rectangle.width_mm, height = rectangle.height_mm;
                 var before = BuildVerification(model, sketch, feature, "modify_plate_thickness",
                     width, height, data.GetDepth(true) * 1000.0, true);
                 if (!CadValidation.Verify(before).passed) return "Existing plate geometry differs from a plain plate; no changes were made.";
@@ -242,7 +281,7 @@ namespace SwCursor.SolidWorksAddin.Services
             } catch { return false; }
         }
 
-        private CadExecutionResult CreatePlate(ModelDoc2 model, CadOperation op)
+        private CadExecutionResult CreatePlate(ModelDoc2 model, CadOperation op, ExecutionTrace trace)
         {
             double widthMm = ReadPositive(op, "width_mm");
             double heightMm = ReadPositive(op, "height_mm");
@@ -259,11 +298,13 @@ namespace SwCursor.SolidWorksAddin.Services
             double height = heightMm / 1000.0;
             double thickness = thicknessMm / 1000.0;
 
+            trace.Mark("select_plane", "Chọn mặt phẳng dựng hình...");
             model.ClearSelection2(true);
             Feature referencePlane = FindFirstReferencePlane(model);
             if (referencePlane == null || !referencePlane.Select2(false, 0))
                 return Fail("Could not select a reference plane in the active Part.");
 
+            trace.Mark("create_sketch", "Tạo sketch hình chữ nhật...");
             SketchManager sketchManager = model.SketchManager;
             sketchManager.InsertSketch(true);
             object rectangle = sketchManager.CreateCornerRectangle(
@@ -276,6 +317,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 return Fail("SOLIDWORKS did not create the rectangular sketch.");
             }
 
+            trace.Mark("driving_dimensions", "Tạo kích thước điều khiển sketch...");
             string dimensionError;
             if (!AddRectangleDrivingDimensions(model, rectangle, width, height, out dimensionError))
             {
@@ -294,6 +336,7 @@ namespace SwCursor.SolidWorksAddin.Services
             if (!plateSketch.Select2(false, 0))
                 return Fail("Could not select Mechra-Plate-Sketch for extrusion.");
 
+            trace.Mark("extrude", "Tạo khối Extrude native...");
             Feature extrude = model.FeatureManager.FeatureExtrusion3(
                 true, false, false,
                 (int)swEndConditions_e.swEndCondBlind,
@@ -312,6 +355,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 return Fail("SOLIDWORKS could not create the native Boss-Extrude feature.");
 
             extrude.Name = PlateExtrudeName;
+            trace.Mark("rebuild", "Rebuild mô hình...");
             bool rebuildOk = model.EditRebuild3();
 
             bool warning;
@@ -319,6 +363,7 @@ namespace SwCursor.SolidWorksAddin.Services
             if (!rebuildOk || errorCode != 0)
                 return Fail("Plate was created but rebuild/feature validation failed (code " + errorCode + ").");
 
+            trace.Mark("readback", "Đọc lại biên sketch, chiều dày và thể tích...");
             CadVerificationSnapshot verification = BuildVerification(
                 model, plateSketch, extrude, "create_plate",
                 widthMm, heightMm, thicknessMm, rebuildOk);
@@ -336,7 +381,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 "Rebuilt the Part and collected sketch/extrude/volume measurements.");
         }
 
-        private CadExecutionResult ModifyPlateThickness(ModelDoc2 model, CadOperation op)
+        private CadExecutionResult ModifyPlateThickness(ModelDoc2 model, CadOperation op, ExecutionTrace trace)
         {
             double thicknessMm = ReadPositive(op, "thickness_mm");
             if (!ValidDimension(thicknessMm))
@@ -362,12 +407,14 @@ namespace SwCursor.SolidWorksAddin.Services
             if (definition == null)
                 return Fail("Feature '" + featureName + "' is not a readable extrusion feature.");
 
+            trace.Mark("access_extrude", "Đọc định nghĩa Extrude hiện tại...");
             if (!definition.AccessSelections(model, null))
                 return Fail("Could not access the selections that define '" + featureName + "'.");
 
             double thickness = thicknessMm / 1000.0;
             try
             {
+                trace.Mark("modify_extrude", "Cập nhật chiều dày trên cùng Extrude...");
                 definition.SetEndCondition(true, (int)swEndConditions_e.swEndCondBlind);
                 definition.SetDepth(true, thickness);
 
@@ -384,6 +431,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 throw;
             }
 
+            trace.Mark("rebuild", "Rebuild mô hình...");
             bool rebuildOk = model.EditRebuild3();
 
             bool warning;
@@ -391,6 +439,7 @@ namespace SwCursor.SolidWorksAddin.Services
             if (!rebuildOk || errorCode != 0)
                 return Fail("Thickness was changed but rebuild/feature validation failed (code " + errorCode + ").");
 
+            trace.Mark("readback", "Đọc lại biên sketch, chiều dày và thể tích...");
             CadVerificationSnapshot verification = BuildVerification(
                 model, sketchFeature, feature, "modify_plate_thickness",
                 widthMm, heightMm, thicknessMm, rebuildOk);
@@ -539,38 +588,34 @@ namespace SwCursor.SolidWorksAddin.Services
             };
         }
 
-        private static bool MeasureRectangleSketchSides(Feature sketchFeature, out double sideAmm, out double sideBmm)
+        private static RectangleMeasurement ReadRectangle(Feature sketchFeature)
         {
-            sideAmm = 0;
-            sideBmm = 0;
             ISketch sketch = sketchFeature?.GetSpecificFeature2() as ISketch;
-            if (sketch == null) return false;
-
-            Array raw = sketch.GetSketchSegments() as Array;
-            if (raw == null) return false;
-            var horizontal = new List<double>();
-            var vertical = new List<double>();
+            Array raw = sketch?.GetSketchSegments() as Array;
+            if (raw == null) return new RectangleMeasurement { message = "Sketch segments could not be read." };
+            var edges = new List<SketchEdgeSnapshot>();
             foreach (object item in raw)
             {
                 ISketchSegment segment = item as ISketchSegment;
-                if (segment == null) return false;
+                if (segment == null) return new RectangleMeasurement { message = "Unreadable sketch segment." };
                 if (segment.ConstructionGeometry) continue;
                 ISketchLine line = segment as ISketchLine;
-                if (line == null) return false;
+                if (line == null) return new RectangleMeasurement { message = "Only straight rectangle edges are supported." };
                 ISketchPoint a = line.GetStartPoint2() as ISketchPoint;
                 ISketchPoint b = line.GetEndPoint2() as ISketchPoint;
-                if (a == null || b == null) return false;
-                double dx = Math.Abs(a.X - b.X), dy = Math.Abs(a.Y - b.Y);
-                if (dx > 1e-12 && dy < 1e-9) horizontal.Add(dx * 1000.0);
-                else if (dy > 1e-12 && dx < 1e-9) vertical.Add(dy * 1000.0);
-                else return false;
+                if (a == null || b == null) return new RectangleMeasurement { message = "Sketch endpoints could not be read." };
+                edges.Add(new SketchEdgeSnapshot { x1 = a.X * 1000.0, y1 = a.Y * 1000.0, z1 = a.Z * 1000.0,
+                    x2 = b.X * 1000.0, y2 = b.Y * 1000.0, z2 = b.Z * 1000.0 });
             }
-            if (horizontal.Count != 2 || vertical.Count != 2
-                || Math.Abs(horizontal[0] - horizontal[1]) > 1e-6
-                || Math.Abs(vertical[0] - vertical[1]) > 1e-6) return false;
-            sideAmm = horizontal[0];
-            sideBmm = vertical[0];
-            return CadValidation.Dimension(sideAmm) && CadValidation.Dimension(sideBmm);
+            return RectangleGeometry.Measure(edges);
+        }
+
+        private static bool MeasureRectangleSketchSides(Feature sketchFeature, out double widthMm, out double heightMm)
+        {
+            RectangleMeasurement rectangle = ReadRectangle(sketchFeature);
+            widthMm = rectangle.width_mm;
+            heightMm = rectangle.height_mm;
+            return rectangle.valid;
         }
 
         private static double ReadVolumeMm3(ModelDoc2 model)

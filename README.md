@@ -2,15 +2,15 @@
 
 A mechanical design copilot embedded in the SOLIDWORKS Task Pane.
 
-**Current package: 0.2.0-dev.4 — development candidate, pending live SOLIDWORKS acceptance.**
+**Current package: 0.2.0-dev.5 — development candidate, pending live SOLIDWORKS acceptance.**
 
-Dev.4 fixes false rejection of Design Binder in an empty Part and adds a read-only Check Part action plus native preflight before plan review. See [Windows instructions](RUN_WINDOWS.md).
+Dev.5 refreshes the native Task Pane with a black product interface, contextual plan/result cards, measured metrics and expandable execution traces. It also strengthens rectangle-boundary validation and retains the Design Binder fix. See [UI notes and preview](docs/UI_DEV5.md). See [Windows instructions](RUN_WINDOWS.md).
 
 This candidate builds the first deterministic text-to-native-Part workflow:
 
 1. Describe one rectangular plate in millimetres.
 2. Resolve missing thickness in the same conversation and Part.
-3. Review the plan and choose **Apply plan**.
+3. Review the plan and choose **Áp dụng kế hoạch**.
 4. Create an editable native sketch and blind extrusion, or edit that extrusion's thickness.
 5. Rebuild and compare sketch dimensions, extrusion depth and volume with the plan.
 6. On failure, attempt a grouped native Undo and compare the pre-edit checkpoint.
@@ -63,7 +63,7 @@ cd ../..
 python scripts/smoke-http.py
 ```
 
-[Validation report](docs/VALIDATION_DEV4.md) separates completed Python/HTTP checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
+[Validation report](docs/VALIDATION_DEV5.md) separates completed Python/source checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
 
 ## Project map
 

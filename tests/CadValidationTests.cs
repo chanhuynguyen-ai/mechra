@@ -18,6 +18,14 @@ public sealed class FeatureScopeCase
     public bool allow_plate { get; set; }
     public bool accepted { get; set; }
 }
+public sealed class RectangleCase
+{
+    public string name { get; set; }
+    public List<SketchEdgeSnapshot> edges { get; set; }
+    public bool valid { get; set; }
+    public double width_mm { get; set; }
+    public double height_mm { get; set; }
+}
 public static class CadValidationTests
 {
     private static int _count;
@@ -58,9 +66,20 @@ public static class CadValidationTests
             foreach (var item in new JavaScriptSerializer().Deserialize<List<FeatureScopeCase>>(File.ReadAllText(args[1])))
                 Check(item.features.All(feature => CadValidation.FeatureAllowed(feature, item.allow_plate)) == item.accepted,
                     "feature scope: " + item.name);
+            foreach (var item in new JavaScriptSerializer().Deserialize<List<RectangleCase>>(File.ReadAllText(args[2])))
+            {
+                var measurement = RectangleGeometry.Measure(item.edges);
+                Check(measurement.valid == item.valid, "rectangle: " + item.name);
+                if (item.valid) Check(Math.Abs(measurement.width_mm - item.width_mm) < 1e-7
+                    && Math.Abs(measurement.height_mm - item.height_mm) < 1e-7, "rectangle dimensions: " + item.name);
+            }
+            Check(!RectangleGeometry.Measure(null).valid, "null sketch edges");
+            var nonfinite = new List<SketchEdgeSnapshot> { new SketchEdgeSnapshot { x1=double.NaN },
+                new SketchEdgeSnapshot(), new SketchEdgeSnapshot(), new SketchEdgeSnapshot() };
+            Check(!RectangleGeometry.Measure(nonfinite).valid, "nonfinite sketch coordinates");
             var invalid=new CadVerificationSnapshot {measured_volume_mm3=double.NaN};
             Check(!CadValidation.Verify(invalid).passed,"nonfinite measurements");
-            Console.WriteLine("PASS: "+_count+" C# contract, document-revision, feature-scope and verification checks. No SOLIDWORKS COM calls.");
+            Console.WriteLine("PASS: "+_count+" C# contract, document-revision, feature-scope, rectangle and verification checks. No SOLIDWORKS COM calls.");
             return 0;
         } catch(Exception ex) { Console.Error.WriteLine("FAIL: "+ex.Message); return 1; }
     }

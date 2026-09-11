@@ -4,7 +4,7 @@
 Native SOLIDWORKS add-in, Task Pane, model context, local agent boundary, persistent-reference foundation and shared contracts. Live-tested in SOLIDWORKS 2025 SP1.2.
 
 ## v0.2.0 — Text → Native Part 🚧
-Candidate `0.2.0-dev.4` fixes Design Binder/environment metadata classification and adds read-only Check Part readiness checks before plan review. Twenty-three Python test methods pass locally, including shared feature-scope regressions. The user's screenshot confirms dev.3 loaded in SOLIDWORKS 2025 SP1.2 and communicated with the agent; it exposed the false nonblank-Part rejection. Dev.4 native build/UI and actual create/edit/Undo remain pending. Details: `VALIDATION_DEV4.md`.
+Candidate `0.2.0-dev.5` adds a black native card UI, closed rectangle validation and execution phase/timing diagnostics. Twenty-six Python test methods pass locally. The user's dev.3 screenshot confirms the earlier pane loaded and communicated with the agent; no dev.5 native build, UI or CAD acceptance is claimed. Details: `VALIDATION_DEV5.md` and `UI_DEV5.md`.
 
 Acceptance target: `Create a 100 x 60 x 5 mm plate` produces an editable native sketch + extrusion; `change thickness to 8 mm` edits the existing design; rebuild and measured verification pass.
 

@@ -2,6 +2,16 @@
 
 All notable changes to Mechra are recorded here.
 
+## [0.2.0-dev.5] — 2026-09-11 (native UI and geometry candidate)
+
+- Replace the old log-form layout with a black native WinForms workspace: contextual conversation, reviewed CAD plan, metric cards, expandable details and a fixed composer.
+- Add custom monochrome controls, technical wire mark, accessible button names/focus and responsive text wrapping. No new web runtime or LLM provider dependency.
+- Keep explicit apply, revision checks and local CAD execution; explain mm assumptions and local planner status.
+- Record execution phase/time and failure phase in exported logs; preserve logs across New chat within the pane session.
+- Require four unique connected rectangle boundary edges before accepting plate geometry; add shared geometry fixtures for Python/C#.
+- 26 Python test methods passed, including 20 rectangle fixtures, 384 edge order/direction variants and 18 nonfinite-coordinate variants. Source audit passed.
+- Native UI/build/DPI, full HTTP/schema suite and actual SOLIDWORKS CAD execution remain pending. See `docs/VALIDATION_DEV5.md`.
+
 ## [0.2.0-dev.4] — 2026-09-11 (template compatibility and readiness candidate)
 
 - Fixed the false rejection of Design Binder (`DocsFolder`) and environment metadata (`EnvFolder`) in otherwise blank Parts, in both Python planning and native C# preflight.

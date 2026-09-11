@@ -59,3 +59,7 @@ Scope: simple prismatic machined parts only.
 ## Commercial beta gate
 
 Do not call the product manufacturing-ready until the test corpus has explicit metrics for generation success, dimension accuracy, rebuild success, repair success, unresolved-assumption rate, crash rate and rollback reliability.
+
+## dev.5 candidate status
+
+26 Python test methods passed; native card UI, rectangle topology checks and execution trace implemented. C# build, UI/DPI and actual CAD acceptance remain open. See `VALIDATION_DEV5.md` and `UI_DEV5.md`. No milestone is promoted by this update.

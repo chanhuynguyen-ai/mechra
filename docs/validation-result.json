@@ -1,5 +1,5 @@
 {
-  "candidate": "0.2.0-dev.4",
+  "candidate": "0.2.0-dev.5",
   "runtime": {
     "python": "3.12.14",
     "pydantic": "2.13.5"
@@ -10,7 +10,12 @@
     "shared_feature_scope_cases": 16,
     "shared_measurement_vectors": 14,
     "source_audit": "passed",
-    "python_compileall": "passed"
+    "python_compileall": "passed",
+    "rectangle_methods_passed": 3,
+    "rectangle_shared_cases": 20,
+    "rectangle_permutations": 384,
+    "rectangle_nonfinite_variants": 18,
+    "illustrative_preview": "rendered and visually inspected; not native capture"
   },
   "user_evidence": {
     "candidate": "0.2.0-dev.3",
@@ -21,11 +26,11 @@
     "native_create_verified": false
   },
   "pending": [
-    "Full 29-method Python HTTP/schema suite and real HTTP smoke: FastAPI/Uvicorn/jsonschema absent in resumed environment",
-    "PowerShell parser and process tests on Windows",
-    "dev.4 C# build/pure tests",
-    "dev.4 Task Pane Check Part and no-mutation live check",
-    "Native create/edit/rebuild verification",
+    "Full 32-method Python HTTP/schema suite and real HTTP smoke",
+    "Windows PowerShell parser/process tests",
+    "dev.5 C# build and pure tests",
+    "dev.5 native UI, resize, DPI, keyboard and disposal",
+    "Native create/edit/rebuild and volume verification",
     "Native Undo/failure rollback"
   ],
   "cad_live_pass_claimed": false

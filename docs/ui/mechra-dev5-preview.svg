@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1266" height="1110" viewBox="0 0 1266 1110">
+<rect x="0" y="0" width="1266" height="1110" rx="0" fill="#070809" stroke="none"/>
+<text x="24" y="38" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="26" font-weight="700">Mechra</text>
+<text x="155" y="37" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="700">NATIVE CAD WORKSPACE</text>
+<text x="24" y="65" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Bản xem trước bố cục dev.5 · Dữ liệu minh họa · Chưa phải ảnh chạy WinForms trong SOLIDWORKS</text>
+<text x="24" y="100" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="700">01  /  BẮT ĐẦU</text>
+<rect x="24" y="120" width="390" height="946" rx="14" fill="#090a0c" stroke="#2b2f37"/>
+<path d="M 57,142 L 70,148.5 L 70,161.5 L 57,168 L 44,161.5 L 44,148.5 Z M 44,148.5 L 57,155 L 70,148.5 M 57,155 L 57,168" stroke="#a6cbdc" fill="none" stroke-width="1.5"/>
+<text x="82" y="163" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="23" font-weight="700">Mechra</text>
+<rect x="365" y="138" width="33" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="376.46875" y="160" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">+</text>
+<text x="82" y="186" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="9" font-weight="400">NATIVE CAD   /   LOCAL PLANNER</text>
+<text x="39" y="217" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Chưa kiểm tra Part</text>
+<rect x="38" y="887" width="102" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="56.78125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Check Part</text>
+<rect x="149" y="887" width="88" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="167.203125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Save log</text>
+<rect x="38" y="931" width="362" height="95" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="52" y="956" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Mô tả plate bạn muốn tạo...</text>
+<text x="52" y="1009" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Shift + Enter xuống dòng</text>
+<rect x="320" y="982" width="65" height="34" rx="8" fill="#edf0f4" stroke="#2b2f37"/>
+<text x="335.4453125" y="1004" fill="#090a0c" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Gửi ↑</text>
+<text x="38" y="1050" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Sẵn sàng  ·  0.2.0-dev.5</text>
+<text x="438" y="100" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="700">02  /  XEM KẾ HOẠCH</text>
+<rect x="438" y="120" width="390" height="946" rx="14" fill="#090a0c" stroke="#2b2f37"/>
+<path d="M 471,142 L 484,148.5 L 484,161.5 L 471,168 L 458,161.5 L 458,148.5 Z M 458,148.5 L 471,155 L 484,148.5 M 471,155 L 471,168" stroke="#a6cbdc" fill="none" stroke-width="1.5"/>
+<text x="496" y="163" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="23" font-weight="700">Mechra</text>
+<rect x="779" y="138" width="33" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="790.46875" y="160" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">+</text>
+<text x="496" y="186" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="9" font-weight="400">NATIVE CAD   /   LOCAL PLANNER</text>
+<text x="453" y="217" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Part2  /  Default</text>
+<rect x="452" y="887" width="102" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="470.78125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Check Part</text>
+<rect x="563" y="887" width="88" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="581.203125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Save log</text>
+<rect x="452" y="931" width="362" height="95" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="466" y="956" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Mô tả plate bạn muốn tạo...</text>
+<text x="466" y="1009" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Shift + Enter xuống dòng</text>
+<rect x="734" y="982" width="65" height="34" rx="8" fill="#edf0f4" stroke="#2b2f37"/>
+<text x="749.4453125" y="1004" fill="#090a0c" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Gửi ↑</text>
+<text x="452" y="1050" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Sẵn sàng  ·  0.2.0-dev.5</text>
+<text x="852" y="100" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="700">03  /  KẾT QUẢ</text>
+<rect x="852" y="120" width="390" height="946" rx="14" fill="#090a0c" stroke="#2b2f37"/>
+<path d="M 885,142 L 898,148.5 L 898,161.5 L 885,168 L 872,161.5 L 872,148.5 Z M 872,148.5 L 885,155 L 898,148.5 M 885,155 L 885,168" stroke="#a6cbdc" fill="none" stroke-width="1.5"/>
+<text x="910" y="163" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="23" font-weight="700">Mechra</text>
+<rect x="1193" y="138" width="33" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="1204.46875" y="160" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">+</text>
+<text x="910" y="186" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="9" font-weight="400">NATIVE CAD   /   LOCAL PLANNER</text>
+<text x="867" y="217" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Part2  /  Default</text>
+<rect x="866" y="887" width="102" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="884.78125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Check Part</text>
+<rect x="977" y="887" width="88" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="995.203125" y="909" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Save log</text>
+<rect x="866" y="931" width="362" height="95" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="880" y="956" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Mô tả plate bạn muốn tạo...</text>
+<text x="880" y="1009" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Shift + Enter xuống dòng</text>
+<rect x="1148" y="982" width="65" height="34" rx="8" fill="#edf0f4" stroke="#2b2f37"/>
+<text x="1163.4453125" y="1004" fill="#090a0c" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Gửi ↑</text>
+<text x="866" y="1050" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">Đã kiểm chứng · Part native có thể chỉnh sửa</text>
+<rect x="38" y="242" width="362" height="467" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="53" y="269" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">THIẾT KẾ CÙNG MECHRA</text>
+<path d="M 78,304 L 104,317.0 L 104,343.0 L 78,356 L 52,343.0 L 52,317.0 Z M 52,317.0 L 78,330 L 104,317.0 M 78,330 L 78,356" stroke="#a6cbdc" fill="none" stroke-width="1.5"/>
+<text x="53" y="396" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="700">Từ ý tưởng</text>
+<text x="53" y="433" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="700">đến Part native.</text>
+<text x="53" y="469" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Tạo plate có kích thước điều khiển, sửa chiều</text>
+<text x="53" y="490" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">dày và kiểm chứng sau rebuild.</text>
+<text x="53" y="544" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">01 Mô tả  →  02 Xem kế hoạch  →  03 Áp dụng</text>
+<rect x="53" y="562" width="332" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="134.765625" y="584" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Tạo plate 100 × 60 × 5 mm</text>
+<rect x="53" y="606" width="332" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="139.21875" y="628" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Đổi chiều dày thành 8 mm</text>
+<text x="53" y="665" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="400">Bắt đầu với Part trống. Bộ lập kế hoạch cục bộ; chưa kết</text>
+<text x="53" y="683" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="400">nối mô hình AI.</text>
+<rect x="452" y="242" width="362" height="91" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="467" y="269" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">BẠN</text>
+<text x="467" y="302" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="14" font-weight="400">Tạo plate 100 x 60 x 5 mm</text>
+<rect x="452" y="347" width="362" height="429" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="467" y="374" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">CAD PLAN  /  01 OPERATION</text>
+<text x="467" y="409" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="19" font-weight="700">Tạo plate native</text>
+<text x="467" y="436" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Part2  ·  Default</text>
+<rect x="467" y="456" width="332" height="72" rx="5" fill="#191c21" stroke="none"/>
+<text x="479" y="479" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">RỘNG · mm</text>
+<text x="479" y="507" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">100</text>
+<text x="587" y="479" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">CAO · mm</text>
+<text x="587" y="507" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">60</text>
+<text x="695" y="479" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">DÀY · mm</text>
+<text x="695" y="507" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">5</text>
+<text x="467" y="554" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Sketch chữ nhật trên mặt phẳng tham chiếu đầu tiên.</text>
+<text x="467" y="575" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Extrude theo chiều dày đã chọn.</text>
+<text x="467" y="604" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="400">Đơn vị: mm. Giá trị không ghi đơn vị được hiểu là mm.</text>
+<text x="467" y="630" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Tự động rebuild và đối chiếu kích thước, thể tích sau</text>
+<text x="467" y="651" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">khi thực thi.</text>
+<text x="467" y="710" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">CHỜ BẠN XÁC NHẬN</text>
+<rect x="467" y="726" width="165" height="34" rx="8" fill="#edf0f4" stroke="#2b2f37"/>
+<text x="495.203125" y="748" fill="#090a0c" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Áp dụng kế hoạch</text>
+<rect x="642" y="726" width="61" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="660.625" y="748" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Hủy</text>
+<rect x="866" y="242" width="362" height="91" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="881" y="269" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">BẠN</text>
+<text x="881" y="302" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="14" font-weight="400">Đổi chiều dày thành 8 mm</text>
+<rect x="866" y="347" width="362" height="165" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="881" y="374" fill="#a6cbdc" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">CAD PLAN  /  01 OPERATION</text>
+<text x="881" y="408" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="19" font-weight="700">Cập nhật chiều dày</text>
+<text x="881" y="442" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Chiều dày mới: 8 mm</text>
+<text x="881" y="482" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="400">Đã gửi thực thi</text>
+<rect x="866" y="526" width="362" height="319" rx="10" fill="#111317" stroke="#2b2f37"/>
+<text x="881" y="553" fill="#73d8ae" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="700">VERIFIED  /  ĐÃ KIỂM CHỨNG</text>
+<text x="881" y="586" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="19" font-weight="700">Part đã sẵn sàng.</text>
+<text x="881" y="614" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">KÍCH THƯỚC ĐO LẠI</text>
+<rect x="881" y="629" width="332" height="72" rx="5" fill="#191c21" stroke="none"/>
+<text x="893" y="652" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">RỘNG · mm</text>
+<text x="893" y="680" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">100</text>
+<text x="1001" y="652" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">CAO · mm</text>
+<text x="1001" y="680" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">60</text>
+<text x="1109" y="652" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="10" font-weight="400">DÀY · mm</text>
+<text x="1109" y="680" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700">8</text>
+<text x="881" y="727" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="400">Thể tích: 48000 mm³</text>
+<text x="881" y="754" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">Rebuild thành công. Kích thước và thể tích nằm trong</text>
+<text x="881" y="773" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">dung sai kiểm chứng.</text>
+<rect x="881" y="800" width="176" height="34" rx="8" fill="#191c21" stroke="#2b2f37"/>
+<text x="913.6015625" y="822" fill="#edf0f4" font-family="DejaVu Sans, sans-serif" font-size="12" font-weight="400">+ Chi tiết kỹ thuật</text>
+<text x="24" y="1090" fill="#97a0af" font-family="DejaVu Sans, sans-serif" font-size="11" font-weight="400">Black foundation · Native controls · Review before apply · Measured results</text>
+</svg>

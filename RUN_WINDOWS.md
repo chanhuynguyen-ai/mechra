@@ -1,18 +1,18 @@
-# Chạy Mechra 0.2.0-dev.4 trên Windows
+# Chạy Mechra 0.2.0-dev.5 trên Windows
 
-Bản này sửa lỗi nhận nhầm Design Binder trong Part trống, thêm Check Part và tiếp tục mốc tạo/sửa plate native. Chưa tích hợp LLM; không cần API key.
+Bản này thiết kế lại Task Pane nền đen, thẻ hội thoại/kế hoạch/kết quả, chi tiết kỹ thuật thu gọn và tiếp tục mốc tạo/sửa plate native. Giữ bản sửa Design Binder; bổ sung kiểm tra rectangle khép kín và log theo bước. Chưa tích hợp LLM; không cần API key.
 
 ## 1. Giải nén và cài bản mới
 
-Lưu công việc, đóng SOLIDWORKS. Giải nén `Mechra-v0.2.0-dev.4.zip` vào `C:\AI_project`. Mở **Windows PowerShell → Run as Administrator** và chạy:
+Lưu công việc, đóng SOLIDWORKS. Giải nén `Mechra-v0.2.0-dev.5.zip` vào `C:\AI_project`. Mở **Windows PowerShell → Run as Administrator** và chạy:
 
 ```powershell
-cd C:\AI_project\Mechra-v0.2.0-dev.4
+cd C:\AI_project\Mechra-v0.2.0-dev.5
 Set-ExecutionPolicy -Scope Process Bypass
-.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.3
+.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.4
 ```
 
-Nếu agent đang chạy từ thư mục khác, thay `PreviousProjectRoot` bằng đúng thư mục đó. Nếu không có bản cũ, bỏ tham số này. Script chỉ dừng listener được xác minh thuộc thư mục được chỉ định: kiểm tra đường dẫn Python, lệnh Uvicorn, PID/thời điểm tạo; hỗ trợ tiến trình con của Windows venv. Không dừng cả nhóm Python và không sửa Part đang mở.
+Nếu đang dùng dev.3, dùng `C:\AI_project\Mechra-v0.2.0-dev.3` cho `PreviousProjectRoot`. Nếu agent đang chạy từ thư mục khác, thay `PreviousProjectRoot` bằng đúng thư mục đó. Nếu không có bản cũ, bỏ tham số này. Script chỉ dừng listener được xác minh thuộc thư mục được chỉ định: kiểm tra đường dẫn Python, lệnh Uvicorn, PID/thời điểm tạo; hỗ trợ tiến trình con của Windows venv. Không dừng cả nhóm Python và không sửa Part đang mở.
 
 Bộ cài sẽ:
 
@@ -28,24 +28,24 @@ Chỉ mở SOLIDWORKS khi thấy **Add-in registration verified**. Nếu dùng `
 Nếu SOLIDWORKS nằm ngoài vị trí thông thường:
 
 ```powershell
-.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.3 -SolidWorksApiDir 'D:\SOLIDWORKS\api\redist'
+.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.4 -SolidWorksApiDir 'D:\SOLIDWORKS\api\redist'
 ```
 
 ## 2. Thử tạo plate
 
-Mở SOLIDWORKS → **Tools → Add-Ins → Mechra**. Giao diện mới có **Mechra / Native CAD**, log chào **MECHRA v0.2.0-dev.4** và các nút **Check Part / New chat / Save log**.
+Mở SOLIDWORKS → **Tools → Add-Ins → Mechra**. Giao diện mới có chữ **Mechra**, biểu tượng khối kỹ thuật, nhãn **NATIVE CAD / LOCAL PLANNER** và phiên bản **0.2.0-dev.5** ở footer lúc bắt đầu. Nút **+** tạo cuộc trò chuyện mới; **Check Part / Save log** nằm trên ô nhập.
 
 1. Chọn **File → New → Part** để mở một Part trống, một configuration. Có thể thử lại Part2 đang trống trong ảnh. Design Binder và Lights, Cameras and Scene được nhận diện là thư mục mặc định; không cần xóa chúng.
-2. Bấm **Check Part**. Với Part trống hợp lệ, dòng **Tạo plate** sẽ báo **Sẵn sàng lập kế hoạch**, và số solid/surface bodies đều bằng 0. Sau đó gửi `Tạo plate 100 x 60 x 5 mm`.
-3. Xem **REVIEW PLAN** rồi bấm **Apply plan**.
+2. Bấm **Check Part**. Với Part trống hợp lệ, thẻ **PART CHECK** báo **Sẵn sàng tạo plate mới**. Mở **Chi tiết Part** để xem số solid/surface bodies, cả hai phải bằng 0. Sau đó gửi `Tạo plate 100 x 60 x 5 mm`.
+3. Xem **CAD PLAN** rồi bấm **Áp dụng kế hoạch**.
 4. Kiểm tra có `Mechra-Plate-Sketch`, `Mechra-Plate-Extrude` và kết quả **VERIFIED**, thể tích **30.000 mm³**.
-5. Gửi `Đổi chiều dày thành 8 mm`, xem kế hoạch rồi **Apply plan**.
+5. Gửi `Đổi chiều dày thành 8 mm`, xem kế hoạch rồi **Áp dụng kế hoạch**.
 6. Kiểm tra chiều dày **8 mm**, thể tích **48.000 mm³**; feature Extrude hiện tại được chỉnh sửa.
 7. Bấm **Save log** và lưu Part bằng SOLIDWORKS khi kết quả đúng.
 
-Trước khi hiện REVIEW PLAN, add-in kiểm tra trực tiếp điều kiện của Part: chế độ sửa sketch, quyền ghi, số configuration, feature, solid/surface bodies và hình học plate khi sửa chiều dày. Apply vẫn kiểm tra lại. **Check Part** chỉ đọc và báo điều kiện; chưa phải kết quả VERIFIED của một thao tác tạo/sửa.
+Trước khi hiện CAD PLAN, add-in kiểm tra trực tiếp điều kiện của Part: chế độ sửa sketch, quyền ghi, số configuration, feature, solid/surface bodies và hình học plate khi sửa chiều dày. Áp dụng kế hoạch vẫn kiểm tra lại. **Check Part** chỉ đọc và báo điều kiện; chưa phải kết quả VERIFIED của một thao tác tạo/sửa.
 
-Nếu vẫn bị chặn ở một Part mới, bấm **Check Part → Save log** và gửi file `Mechra-session.txt`. Log có tên và API type của các feature, số bodies và đường dẫn DLL đang chạy.
+Nếu vẫn bị chặn ở một Part mới, bấm **Check Part → Save log** và gửi file `Mechra-session-YYYYMMDD-HHMMSS.txt`. Log có tên và API type của các feature, số bodies và đường dẫn DLL đang chạy.
 
 Thử hỏi lại kích thước trên một Part mới: `Tạo plate 100 x 60 mm`, rồi trả lời `5 mm`.
 
@@ -59,10 +59,10 @@ Bộ cài tạo hai loại file trong thư mục `.runtime` của bản mới:
 Gửi hai file này để xác định lỗi. Có thể tạo lại báo cáo chỉ đọc bằng:
 
 ```powershell
-.\scripts\doctor.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.3
+.\scripts\doctor.ps1 -PreviousProjectRoot C:\AI_project\Mechra-v0.2.0-dev.4
 ```
 
-Báo cáo đăng ký đúng không chứng minh DLL đã được SOLIDWORKS nạp. Đối chiếu phiên bản trong lời chào Task Pane và **Save log**; log này chứa đường dẫn DLL thực sự đang chạy.
+Báo cáo đăng ký đúng không chứng minh DLL đã được SOLIDWORKS nạp. Đối chiếu phiên bản ở footer lúc bắt đầu và **Save log**; log này chứa đường dẫn DLL thực sự đang chạy.
 
 Nếu báo port 8765 không xác minh được, script giữ nguyên tiến trình. Chạy `doctor.ps1` bằng Administrator để lấy thông tin listener trước khi xử lý tiếp. Không dùng `Stop-Process -Name python` hoặc dừng PID chỉ dựa vào cổng.
 
@@ -85,4 +85,6 @@ Nếu báo port 8765 không xác minh được, script giữ nguyên tiến trì
 .\scripts\run-agent.ps1
 ```
 
-Giữ repo `C:\AI_project\Mechra-clean` và thư mục dev.3 trong lúc thử dev.4. Sau khi các bài kiểm tra thực tế đạt yêu cầu, chuyển source vào nhánh `dev`; không đưa môi trường Python, log runtime, `bin`, `obj` hoặc Interop DLL vào Git. Chưa gắn tag `v0.2.0` khi [các bước kiểm thử SOLIDWORKS](docs/V02_TEST_PLAN.md) còn chưa đạt.
+Kiểm tra thêm bố cục hẹp/rộng, DPI và bàn phím theo [UI_DEV5.md](docs/UI_DEV5.md). PNG/SVG trong `docs/ui` chỉ là minh họa, chưa phải ảnh chụp native.
+
+Giữ repo `C:\AI_project\Mechra-clean` và thư mục dev.4 trong lúc thử dev.5. Sau khi các bài kiểm tra thực tế đạt yêu cầu, chuyển source vào nhánh `dev`; không đưa môi trường Python, log runtime, `bin`, `obj` hoặc Interop DLL vào Git. Chưa gắn tag `v0.2.0` khi [các bước kiểm thử SOLIDWORKS](docs/V02_TEST_PLAN.md) còn chưa đạt.

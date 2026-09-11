@@ -57,10 +57,12 @@
     <Compile Include="Services\CadContracts.cs" />
     <Compile Include="Services\CadExecutor.cs" />
     <Compile Include="Services\CadValidation.cs" />
+    <Compile Include="Services\RectangleGeometry.cs" />
     <Compile Include="Services\ModelContextService.cs" />
     <Compile Include="Services\ModelRevision.cs" />
     <Compile Include="Services\PersistentReferenceService.cs" />
     <Compile Include="UI\CopilotPanel.cs" />
+    <Compile Include="UI\ProductControls.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="Exists('$(MSBuildToolsPath)\Microsoft.CSharp.targets')" />
