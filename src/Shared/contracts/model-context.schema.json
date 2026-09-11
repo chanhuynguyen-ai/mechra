@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "FeatureInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Type Name"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FeatureInfo",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "document_title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Document Title"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "document_type": {
+      "default": "none",
+      "enum": [
+        "none",
+        "part",
+        "assembly",
+        "drawing",
+        "unknown"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "document_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Document Id"
+    },
+    "update_stamp": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Update Stamp"
+    },
+    "configuration": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Configuration"
+    },
+    "features": {
+      "items": {
+        "$ref": "#/$defs/FeatureInfo"
+      },
+      "maxItems": 5000,
+      "title": "Features",
+      "type": "array"
+    }
+  },
+  "title": "ModelContext",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mechra.local/contracts/model-context.schema.json"
+}

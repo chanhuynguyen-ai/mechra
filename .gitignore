@@ -1,0 +1,17 @@
+.vs/
+bin/
+obj/
+__pycache__/
+*.pyc
+.venv/
+.env
+*.user
+*.suo
+*.tlb
+*.pdb
+agent.log
+agent-error.log
+SolidWorks.Interop.*.dll
+
+.runtime/
+.venv.invalid-*/

@@ -1,0 +1,345 @@
+{
+  "$defs": {
+    "CadOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "create_plate",
+            "modify_plate_thickness"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "intent": {
+          "minLength": 1,
+          "title": "Intent",
+          "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": true,
+          "title": "Inputs",
+          "type": "object"
+        },
+        "depends_on": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0,
+          "title": "Depends On",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "intent",
+        "inputs"
+      ],
+      "title": "CadOperation",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "create_plate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "inputs": {
+                "additionalProperties": false,
+                "properties": {
+                  "width_mm": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 10000,
+                    "title": "Width Mm",
+                    "type": "number"
+                  },
+                  "height_mm": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 10000,
+                    "title": "Height Mm",
+                    "type": "number"
+                  },
+                  "thickness_mm": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 10000,
+                    "title": "Thickness Mm",
+                    "type": "number"
+                  },
+                  "plane": {
+                    "const": "first_reference_plane",
+                    "default": "first_reference_plane",
+                    "title": "Plane",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "width_mm",
+                  "height_mm",
+                  "thickness_mm"
+                ],
+                "title": "PlateInputs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "modify_plate_thickness"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "inputs": {
+                "additionalProperties": false,
+                "properties": {
+                  "thickness_mm": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 10000,
+                    "title": "Thickness Mm",
+                    "type": "number"
+                  },
+                  "feature_name": {
+                    "const": "Mechra-Plate-Extrude",
+                    "default": "Mechra-Plate-Extrude",
+                    "title": "Feature Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "thickness_mm"
+                ],
+                "title": "ThicknessInputs",
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CadPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "0.2",
+          "default": "0.2",
+          "title": "Version",
+          "type": "string"
+        },
+        "document_type": {
+          "const": "part",
+          "default": "part",
+          "title": "Document Type",
+          "type": "string"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        },
+        "requires_confirmation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Confirmation",
+          "type": "boolean"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/CadOperation"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "title": "Operations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operations"
+      ],
+      "title": "CadPlan",
+      "type": "object"
+    },
+    "DesignSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "0.1",
+          "default": "0.1",
+          "title": "Version",
+          "type": "string"
+        },
+        "source": {
+          "default": "user_text",
+          "title": "Source",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/SpecItem"
+          },
+          "title": "Items",
+          "type": "array"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "title": "DesignSpec",
+      "type": "object"
+    },
+    "SpecItem": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "default": "mm",
+          "title": "Unit",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "assumed",
+            "missing"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "required_for": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required For",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "field",
+        "value",
+        "status",
+        "source",
+        "confidence",
+        "required_for"
+      ],
+      "title": "SpecItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "action": {
+      "default": "none",
+      "enum": [
+        "none",
+        "execute_cad_plan"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "status": {
+      "default": "info",
+      "enum": [
+        "info",
+        "clarification_required",
+        "plan_ready"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "requires_confirmation": {
+      "default": false,
+      "title": "Requires Confirmation",
+      "type": "boolean"
+    },
+    "plan": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CadPlan"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "design_spec": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DesignSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "message"
+  ],
+  "title": "ChatResponse",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mechra.local/contracts/chat-response.schema.json"
+}

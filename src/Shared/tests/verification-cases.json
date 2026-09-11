@@ -1,0 +1,281 @@
+[
+  {
+    "name": "create_pass",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": true
+  },
+  {
+    "name": "edit_pass",
+    "snapshot": {
+      "operation": "modify_plate_thickness",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 8,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 8,
+      "expected_volume_mm3": 48000,
+      "measured_volume_mm3": 48000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": true
+  },
+  {
+    "name": "volume_wrong",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 25000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "rebuild_failed",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": false,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "feature_missing",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "width_wrong",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100.1,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "thickness_wrong",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5.1,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "expectation_volume_forged",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 25000,
+      "measured_volume_mm3": 25000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "dimension_within_tolerance",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100.01,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": true
+  },
+  {
+    "name": "volume_within_tolerance",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30100,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": true
+  },
+  {
+    "name": "zero_volume",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 0,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "negative_expected",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": -100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "unsupported_operation",
+    "snapshot": {
+      "operation": "delete_model",
+      "rebuild_ok": true,
+      "expected_width_mm": 100,
+      "expected_height_mm": 60,
+      "expected_thickness_mm": 5,
+      "measured_width_mm": 100,
+      "measured_height_mm": 60,
+      "measured_thickness_mm": 5,
+      "expected_volume_mm3": 30000,
+      "measured_volume_mm3": 30000,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  },
+  {
+    "name": "tiny_volume_mismatch",
+    "snapshot": {
+      "operation": "create_plate",
+      "rebuild_ok": true,
+      "expected_width_mm": 0.01,
+      "expected_height_mm": 0.01,
+      "expected_thickness_mm": 0.01,
+      "measured_width_mm": 0.01,
+      "measured_height_mm": 0.01,
+      "measured_thickness_mm": 0.01,
+      "expected_volume_mm3": 1e-06,
+      "measured_volume_mm3": 0.1,
+      "feature_names": [
+        "Mechra-Plate-Sketch",
+        "Mechra-Plate-Extrude"
+      ]
+    },
+    "passed": false
+  }
+]

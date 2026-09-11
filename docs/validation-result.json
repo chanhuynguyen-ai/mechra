@@ -1,0 +1,21 @@
+{
+  "candidate": "0.2.0-dev.2",
+  "runtime": {
+    "python": "3.12.14"
+  },
+  "completed": {
+    "unittest_methods_passed": 23,
+    "shared_measurement_vectors": 14,
+    "real_http_smoke": "passed",
+    "source_audit": "passed",
+    "python_compileall": "passed"
+  },
+  "pending": [
+    "C# compiler and .NET Framework build",
+    "C# pure test executable on Windows",
+    "SOLIDWORKS native create/edit/rebuild",
+    "Task Pane visual test",
+    "native Undo and failure rollback live verification"
+  ],
+  "cad_live_pass_claimed": false
+}

@@ -1,0 +1,84 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "operation": {
+      "enum": [
+        "create_plate",
+        "modify_plate_thickness"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "rebuild_ok": {
+      "title": "Rebuild Ok",
+      "type": "boolean"
+    },
+    "expected_width_mm": {
+      "exclusiveMinimum": 0,
+      "maximum": 10000,
+      "title": "Expected Width Mm",
+      "type": "number"
+    },
+    "expected_height_mm": {
+      "exclusiveMinimum": 0,
+      "maximum": 10000,
+      "title": "Expected Height Mm",
+      "type": "number"
+    },
+    "expected_thickness_mm": {
+      "exclusiveMinimum": 0,
+      "maximum": 10000,
+      "title": "Expected Thickness Mm",
+      "type": "number"
+    },
+    "measured_width_mm": {
+      "exclusiveMinimum": 0,
+      "title": "Measured Width Mm",
+      "type": "number"
+    },
+    "measured_height_mm": {
+      "exclusiveMinimum": 0,
+      "title": "Measured Height Mm",
+      "type": "number"
+    },
+    "measured_thickness_mm": {
+      "exclusiveMinimum": 0,
+      "title": "Measured Thickness Mm",
+      "type": "number"
+    },
+    "expected_volume_mm3": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Volume Mm3",
+      "type": "number"
+    },
+    "measured_volume_mm3": {
+      "exclusiveMinimum": 0,
+      "title": "Measured Volume Mm3",
+      "type": "number"
+    },
+    "feature_names": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Feature Names",
+      "type": "array"
+    }
+  },
+  "required": [
+    "operation",
+    "rebuild_ok",
+    "expected_width_mm",
+    "expected_height_mm",
+    "expected_thickness_mm",
+    "measured_width_mm",
+    "measured_height_mm",
+    "measured_thickness_mm",
+    "expected_volume_mm3",
+    "measured_volume_mm3"
+  ],
+  "title": "CadVerificationRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mechra.local/contracts/verification.schema.json"
+}
