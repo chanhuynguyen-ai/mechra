@@ -77,6 +77,8 @@ try {
         & $msbuild $project /t:Rebuild "/p:Configuration=$Configuration" "/p:SolidWorksApiDir=$api" /m
         if ($LASTEXITCODE -ne 0) { throw 'Add-in build failed.' }
         & (Join-Path $PSScriptRoot 'test-csharp.ps1') -MSBuildPath $msbuild
+        Write-Step 'Testing native UI layout before registration'
+        & (Join-Path $PSScriptRoot 'test-ui.ps1') -MSBuildPath $msbuild
         if (!$SkipRegister) {
             & (Join-Path $PSScriptRoot 'register-addin.ps1') -Configuration $Configuration -SolidWorksApiDir $api
         }

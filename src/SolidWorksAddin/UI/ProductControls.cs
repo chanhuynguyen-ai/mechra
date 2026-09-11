@@ -106,6 +106,29 @@ namespace SwCursor.SolidWorksAddin.UI
         }
     }
 
+    internal sealed class DetailPreview : Control
+    {
+        public DetailPreview()
+        {
+            ForeColor = ProductTheme.Muted; BackColor = ProductTheme.Surface; TabStop = false;
+            SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+        }
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            int width = Math.Max(1, proposedSize.Width);
+            int limit = (int)Math.Round(136 * DeviceDpi / 96F);
+            int height = TextRenderer.MeasureText(Text, Font, new Size(width, int.MaxValue),
+                TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height;
+            return new Size(width, Math.Min(limit, height));
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.Clear(BackColor);
+            TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor,
+                TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+        }
+    }
+
     internal sealed class WireMark : Control
     {
         public WireMark() { Size = new Size(36, 36); TabStop = false; SetStyle(ControlStyles.OptimizedDoubleBuffer, true); }

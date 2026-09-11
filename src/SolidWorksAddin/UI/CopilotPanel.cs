@@ -12,13 +12,16 @@ namespace SwCursor.SolidWorksAddin.UI
 {
     public sealed class CopilotPanel : UserControl
     {
-        private const string Release = "0.2.0-dev.5";
+        private const string Release = "0.2.0-dev.6";
         private readonly ModelContextService _context;
         private readonly AgentClient _agent;
         private readonly CadExecutor _executor;
-        private readonly FlowLayoutPanel _feed;
+        private readonly ConversationViewport _feed;
+        private readonly TableLayoutPanel _header;
+        private readonly FlowLayoutPanel _toolbar;
+        private readonly PromptComposer _composer;
         private readonly TextBox _input;
-        private readonly Label _status, _document, _placeholder;
+        private readonly Label _status, _document;
         private readonly ProductButton _send, _check, _reset, _export;
         private readonly ToolTip _tips = new ToolTip();
         private readonly StringBuilder _log = new StringBuilder();
@@ -36,88 +39,70 @@ namespace SwCursor.SolidWorksAddin.UI
             AutoScaleDimensions = new SizeF(96, 96);
             BackColor = ProductTheme.Canvas; ForeColor = ProductTheme.Text;
             Font = new Font("Segoe UI", 9F);
-            Padding = new Padding(12, 0, 12, 0);
+            Padding = Padding.Empty;
 
-            var header = new TableLayoutPanel { Dock = DockStyle.Top, Height = 114, ColumnCount = 3,
-                RowCount = 3, Padding = new Padding(0, 14, 0, 8) };
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40));
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 38));
-            header.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-            header.RowStyles.Add(new RowStyle(SizeType.Absolute, 22));
-            header.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            header.Controls.Add(new WireMark { Dock = DockStyle.Fill }, 0, 0);
-            var brand = ProductTheme.Label("Mechra", 17, ProductTheme.Text, true); brand.Margin = new Padding(4, 0, 0, 0);
-            header.Controls.Add(brand, 1, 0);
-            _reset = new ProductButton("+", 34) { Dock = DockStyle.Fill, Margin = new Padding(2, 0, 0, 4), AccessibleName = "Cuộc trò chuyện mới" };
+            _header = new TableLayoutPanel { ColumnCount = 3, RowCount = 3, Padding = new Padding(0, 8, 0, 4) };
+            _header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
+            _header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 34));
+            _header.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+            _header.RowStyles.Add(new RowStyle(SizeType.Absolute, 18));
+            _header.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            _header.Controls.Add(new WireMark { Dock = DockStyle.Fill, Margin = Padding.Empty }, 0, 0);
+            var brand = ProductTheme.Label("Mechra", 14, ProductTheme.Text, true); brand.Margin = new Padding(3, 0, 0, 0);
+            _header.Controls.Add(brand, 1, 0);
+            _reset = new ProductButton("+", 32) { Dock = DockStyle.Fill, Margin = Padding.Empty, AccessibleName = "Cuộc trò chuyện mới" };
             _reset.Click += (_, __) => ResetChat(); _tips.SetToolTip(_reset, "Cuộc trò chuyện mới");
-            header.Controls.Add(_reset, 2, 0);
-            var mode = ProductTheme.Label("NATIVE CAD   /   LOCAL PLANNER", 7.8F, ProductTheme.Muted);
-            mode.Margin = new Padding(4, 0, 0, 0); header.Controls.Add(mode, 1, 1); header.SetColumnSpan(mode, 2);
-            _document = ProductTheme.Label("Chưa kiểm tra Part", 9, ProductTheme.Muted);
+            _header.Controls.Add(_reset, 2, 0);
+            var mode = ProductTheme.Label("NATIVE CAD  ·  LOCAL PLANNER", 7.5F, ProductTheme.Muted);
+            mode.AutoSize = false; mode.AutoEllipsis = true; mode.Margin = new Padding(3, 0, 0, 0);
+            _header.Controls.Add(mode, 1, 1); _header.SetColumnSpan(mode, 2);
+            _document = ProductTheme.Label("Chưa kiểm tra Part", 8.5F, ProductTheme.Muted);
             _document.AutoSize = false; _document.AutoEllipsis = true; _document.TextAlign = ContentAlignment.MiddleLeft;
-            _document.Margin = new Padding(0, 4, 0, 0);
-            header.Controls.Add(_document, 0, 2); header.SetColumnSpan(_document, 3);
+            _document.Margin = Padding.Empty;
+            _header.Controls.Add(_document, 0, 2); _header.SetColumnSpan(_document, 3);
             _tips.SetToolTip(_document, "Tài liệu tại lần kiểm tra gần nhất. Mechra kiểm tra lại trước khi thực thi.");
 
-            var bottom = new TableLayoutPanel { Dock = DockStyle.Bottom, Height = 181, ColumnCount = 1, RowCount = 3 };
-            bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-            bottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
-            var toolbar = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, Margin = Padding.Empty };
-            _check = new ProductButton("Check Part", 102); _check.Click += (_, __) => ShowModelContext();
-            _export = new ProductButton("Save log", 88); _export.Click += (_, __) => ExportLog();
-            toolbar.Controls.AddRange(new Control[] { _check, _export }); bottom.Controls.Add(toolbar, 0, 0);
-
-            var composer = new StackCard { Dock = DockStyle.Fill, AutoSize = false, Margin = Padding.Empty, Padding = new Padding(12, 10, 12, 8) };
-            var editor = new Panel { Dock = DockStyle.Fill, Height = 45, Margin = Padding.Empty };
-            _input = new TextBox { Dock = DockStyle.Fill, Multiline = true, AcceptsReturn = true,
-                BackColor = ProductTheme.Surface, ForeColor = ProductTheme.Text, BorderStyle = BorderStyle.None,
-                MaxLength = 4000, ScrollBars = ScrollBars.Vertical, AccessibleName = "Yêu cầu tạo hoặc sửa plate, đơn vị mm" };
-            _placeholder = ProductTheme.Label("Mô tả plate bạn muốn tạo...", 9.5F, ProductTheme.Muted);
-            _placeholder.Dock = DockStyle.Top; _placeholder.Cursor = Cursors.IBeam; _placeholder.Click += (_, __) => _input.Focus();
-            editor.Controls.Add(_input); editor.Controls.Add(_placeholder);
-            _input.TextChanged += (_, __) => { _placeholder.Visible = _input.TextLength == 0; if (_send != null) _send.Enabled = !_busy && _input.Text.Trim().Length > 0; };
+            _toolbar = new FlowLayoutPanel { WrapContents = false, Margin = Padding.Empty };
+            _check = new ProductButton("Check Part", 100); _check.Click += (_, __) => ShowModelContext();
+            _export = new ProductButton("Save log", 86); _export.Click += (_, __) => ExportLog();
+            _toolbar.Controls.AddRange(new Control[] { _check, _export });
+            _composer = new PromptComposer(); _input = _composer.Editor; _send = _composer.SendButton;
+            _composer.PreferredHeightChanged += (_, __) => PerformLayout();
+            _input.TextChanged += (_, __) => _send.Enabled = !_busy && _input.Text.Trim().Length > 0;
             _input.KeyDown += async (_, e) => {
                 if (e.KeyCode == Keys.Enter && !e.Shift) { e.SuppressKeyPress = true; await SendAsync(); }
             };
-            composer.Add(editor);
-            var composerActions = new TableLayoutPanel { Dock = DockStyle.Fill, Height = 32, ColumnCount = 2, Margin = Padding.Empty };
-            composerActions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            composerActions.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 68));
-            var hint = ProductTheme.Label("Shift + Enter xuống dòng", 7.5F, ProductTheme.Muted); hint.Margin = new Padding(0, 8, 0, 0);
-            composerActions.Controls.Add(hint, 0, 0);
-            _send = new ProductButton("Gửi ↑", 68, true) { Dock = DockStyle.Fill, Enabled = false, Margin = Padding.Empty };
-            _send.Click += async (_, __) => await SendAsync(); composerActions.Controls.Add(_send, 1, 0);
-            composer.Add(composerActions); bottom.Controls.Add(composer, 0, 1);
+            _send.Click += async (_, __) => await SendAsync();
             _status = ProductTheme.Label("Sẵn sàng  ·  " + Release, 7.8F, ProductTheme.Muted);
-            _status.AutoSize = false; _status.AutoEllipsis = true; _status.TextAlign = ContentAlignment.MiddleLeft;
-            _status.Margin = Padding.Empty; bottom.Controls.Add(_status, 0, 2);
-
-            _feed = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown,
-                WrapContents = false, AutoScroll = true, Padding = new Padding(0, 8, 0, 4), BackColor = ProductTheme.Canvas };
-            _feed.SizeChanged += (_, __) => ResizeCards();
-            Controls.Add(_feed); Controls.Add(bottom); Controls.Add(header);
+            _status.AutoSize = false; _status.AutoEllipsis = true; _status.Dock = DockStyle.None;
+            _status.TextAlign = ContentAlignment.MiddleLeft; _status.Margin = Padding.Empty;
+            _feed = new ConversationViewport();
+            Controls.AddRange(new Control[] { _header, _feed, _toolbar, _composer, _status });
             Welcome();
         }
 
         private int Px(int value) => (int)Math.Round(value * DeviceDpi / 96.0);
-        private void ResizeCards()
+        protected override void OnLayout(LayoutEventArgs e)
         {
-            if (_sizing || IsDisposed) return;
+            base.OnLayout(e); if (_sizing || _composer == null || _feed == null) return;
             _sizing = true;
             try {
-                int width = Math.Max(Px(150), _feed.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - Px(2));
-                foreach (Control card in _feed.Controls)
-                { card.MaximumSize = new Size(width, 0); card.MinimumSize = new Size(width, 0); card.Width = width; }
+                PaneRegions r = PaneRegions.Calculate(ClientSize, DeviceDpi, _composer.DesiredHeight);
+                _composer.Bounds = r.Composer;
+                r = PaneRegions.Calculate(ClientSize, DeviceDpi, _composer.DesiredHeight);
+                _header.Bounds = r.Header; _feed.Bounds = r.Feed; _toolbar.Bounds = r.Toolbar;
+                _composer.Bounds = r.Composer; _status.Bounds = r.Status;
+                _header.Padding = new Padding(0, Px(7), 0, Px(3));
+                _header.ColumnStyles[0].Width = Px(32); _header.ColumnStyles[2].Width = Px(32);
+                _header.RowStyles[0].Height = Px(30); _header.RowStyles[1].Height = Px(18);
+                _check.Size = new Size(Px(100), Px(30)); _export.Size = new Size(Px(86), Px(30));
+                _check.Margin = new Padding(0, 0, Px(8), 0); _export.Margin = Padding.Empty;
+                _feed.Reflow();
             } finally { _sizing = false; }
         }
-        private void AddCard(StackCard card)
-        {
-            _feed.Controls.Add(card); ResizeCards();
-            _feed.PerformLayout(); _feed.ScrollControlIntoView(card);
-        }
+        private void ResizeCards() { _feed.Reflow(); }
+        private void AddCard(StackCard card, bool reveal = false) { _feed.AddCard(card, reveal); }
         private StackCard Card(string eyebrow, Color? accent = null)
         {
             var card = new StackCard { Padding = new Padding(Px(14)), Margin = new Padding(0, 0, 0, Px(12)) };
@@ -125,23 +110,14 @@ namespace SwCursor.SolidWorksAddin.UI
         }
         private void Welcome()
         {
-            _welcome = Card("THIẾT KẾ CÙNG MECHRA", ProductTheme.Accent);
-            _welcome.Add(new WireMark { Size = new Size(Px(58), Px(58)), Margin = new Padding(0, Px(8), 0, Px(14)) });
-            _welcome.Add(ProductTheme.Label("Từ ý tưởng\nđến Part native.", 20, ProductTheme.Text, true));
-            _welcome.Add(ProductTheme.Label("Tạo plate có kích thước điều khiển, sửa chiều dày và kiểm chứng sau rebuild.", 10, ProductTheme.Muted));
-            _welcome.Add(ProductTheme.Label("01  Mô tả    →    02  Xem kế hoạch    →    03  Áp dụng", 8, ProductTheme.Accent));
-            var create = new ProductButton("Tạo plate 100 × 60 × 5 mm", 250) { Dock = DockStyle.Fill, Margin = new Padding(0, 8, 0, 8) };
-            create.Click += (_, __) => Draft("Tạo plate 100 x 60 x 5 mm"); _welcome.Add(create);
-            var edit = new ProductButton("Đổi chiều dày thành 8 mm", 250) { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, 10) };
-            edit.Click += (_, __) => Draft("Đổi chiều dày thành 8 mm"); _welcome.Add(edit);
-            _welcome.Add(ProductTheme.Label("Bắt đầu với Part trống. Bản này dùng bộ lập kế hoạch cục bộ; chưa kết nối mô hình AI.", 8.5F, ProductTheme.Muted));
+            _welcome = WelcomeCardFactory.Create(Draft, DeviceDpi);
             AddCard(_welcome); Log("SESSION", "Mechra " + Release + " | Native CAD / deterministic local planner");
         }
         private void Draft(string text) { if (_busy) return; _input.Text = text; _input.Focus(); _input.SelectionStart = text.Length; }
         private void RemoveWelcome()
         {
             if (_welcome == null) return;
-            _feed.Controls.Remove(_welcome); _welcome.Dispose(); _welcome = null;
+            _feed.RemoveCard(_welcome); _welcome.Dispose(); _welcome = null;
         }
         private void Message(string role, string text, bool problem = false)
         {
@@ -149,7 +125,7 @@ namespace SwCursor.SolidWorksAddin.UI
             Log(role, text);
             var card = Card(role, problem ? ProductTheme.Warning : role == "BẠN" ? ProductTheme.Muted : ProductTheme.Accent);
             if (role == "BẠN") card.BackColor = ProductTheme.Raised;
-            card.Add(ProductTheme.Label(text)); AddCard(card);
+            card.Add(ProductTheme.Label(text)); AddCard(card, role == "BẠN");
         }
         private void Log(string role, string text) => _log.AppendLine(DateTime.Now.ToString("O") + " | " + role).AppendLine(text).AppendLine();
         private void ContextLabel(ModelContextSnapshot c)
@@ -185,7 +161,7 @@ namespace SwCursor.SolidWorksAddin.UI
             finally { if (!IsDisposed && !Disposing) SetBusy(false); }
         }
 
-        private static string Number(object value) => Convert.ToDouble(value, CultureInfo.InvariantCulture).ToString("0.###", CultureInfo.InvariantCulture);
+        private static string Number(object value) => Convert.ToDouble(value, CultureInfo.InvariantCulture).ToString("G6", CultureInfo.InvariantCulture);
         private Control Metrics(string[] labels, string[] values)
         {
             var grid = new TableLayoutPanel { ColumnCount = labels.Length, RowCount = 2, Dock = DockStyle.Fill,
@@ -262,11 +238,25 @@ namespace SwCursor.SolidWorksAddin.UI
         }
         private void AddDetails(StackCard card, string title, string details)
         {
-            var text = ProductTheme.Label(details, 8.5F, ProductTheme.Muted); text.Visible = false;
-            var toggle = new ProductButton("+ " + title, Px(170)) { Height = Px(32), Margin = new Padding(0, Px(5), 0, Px(8)) };
+            // Bound the inline preview; the full report remains copyable and in Save log.
+            string[] lines = (details ?? string.Empty).Replace("\r", "").Split('\n');
+            string preview = string.Join("\n", lines.Where(line => !string.IsNullOrWhiteSpace(line)).Take(7));
+            bool shortened = lines.Length > 7 || preview.Length > 520;
+            if (preview.Length > 520) preview = preview.Substring(0, 520);
+            if (shortened) preview += "\n… Sao chép hoặc Save log để xem đầy đủ.";
+            var text = new DetailPreview { Text = preview, Visible = false, Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, Px(6)) };
+            var copy = new ProductButton("Sao chép đầy đủ", Px(146)) { Height = Px(30), Visible = false, Margin = new Padding(0, 0, 0, Px(6)) };
+            copy.Click += (_, __) => {
+                try { Clipboard.SetText(details ?? string.Empty); Status("Đã sao chép chi tiết"); }
+                catch (Exception ex) { Status("Không thể sao chép · Hãy dùng Save log"); Log("CLIPBOARD", ex.Message); }
+            };
+            var toggle = new ProductButton("+ " + title, Px(170)) { Height = Px(30), Margin = new Padding(0, Px(4), 0, Px(6)) };
             bool expanded = false;
-            toggle.Click += (_, __) => { expanded = !expanded; text.Visible = expanded; toggle.Text = (expanded ? "− " : "+ ") + title; ResizeCards(); };
-            card.Add(toggle); card.Add(text);
+            toggle.Click += (_, __) => {
+                expanded = !expanded; text.Visible = copy.Visible = expanded;
+                toggle.Text = (expanded ? "− " : "+ ") + title; ResizeCards();
+            };
+            card.Add(toggle); card.Add(text); card.Add(copy);
         }
         private void ClearPlan(string state)
         {
@@ -281,7 +271,7 @@ namespace SwCursor.SolidWorksAddin.UI
             if (_busy) return;
             ClearPlan("Cuộc trò chuyện mới"); _agent.ResetSession();
             // Keep diagnostic history for export until this pane is closed.
-            while (_feed.Controls.Count > 0) { Control card = _feed.Controls[0]; _feed.Controls.Remove(card); card.Dispose(); }
+            _feed.ClearCards();
             _welcome = null; _input.Clear(); Welcome(); Status("Cuộc trò chuyện mới · " + Release);
         }
         private void ShowModelContext()
@@ -295,10 +285,12 @@ namespace SwCursor.SolidWorksAddin.UI
                 card.Add(ProductTheme.Label(report.can_create ? "Sẵn sàng tạo plate mới." : report.can_edit ? "Sẵn sàng sửa chiều dày plate Mechra." : "Part chưa đáp ứng điều kiện.", 10,
                     report.can_create || report.can_edit ? ProductTheme.Success : ProductTheme.Warning));
                 string details = c.document_type + " / " + c.configuration + "\nSolid bodies: " + report.solid_bodies + " | Surface bodies: " + report.surface_bodies
-                    + "\nTạo plate: " + (report.create_issue ?? "Sẵn sàng") + "\nSửa chiều dày: " + (report.edit_issue ?? "Sẵn sàng")
+                    + (report.create_issue != null && report.create_issue == report.edit_issue
+                        ? "\nĐiều kiện: " + report.create_issue
+                        : "\nTạo plate: " + (report.create_issue ?? "Sẵn sàng") + "\nSửa chiều dày: " + (report.edit_issue ?? "Sẵn sàng"))
                     + "\n\nFEATURES\n" + string.Join("\n", c.features.Select(f => f.name + " [" + (f.type_name ?? "unknown") + "]"));
                 if (!report.can_create && !report.can_edit) card.Add(ProductTheme.Label(report.create_issue, 9, ProductTheme.Muted));
-                AddDetails(card, "Chi tiết Part", details); AddCard(card); Log("PART CHECK", details);
+                AddDetails(card, "Chi tiết Part", details); AddCard(card, true); Log("PART CHECK", details);
                 Status(report.can_create || report.can_edit ? "Part đã kiểm tra · Hãy gửi yêu cầu" : "Part chưa đáp ứng điều kiện");
             } catch (Exception ex) { Message("KIỂM TRA PART THẤT BẠI", ex.Message, true); Status("Không đọc được Part"); }
             finally { SetBusy(false); }
@@ -324,8 +316,10 @@ namespace SwCursor.SolidWorksAddin.UI
         { if (!IsDisposed && !Disposing) { _status.Text = text; _tips.SetToolTip(_status, text); _status.Refresh(); } }
         protected override void Dispose(bool disposing)
         {
-            if (disposing) { _tips.Dispose(); Font.Dispose(); }
+            if (disposing) { _tips.Dispose(); }
+            Font ownedFont = disposing ? Font : null;
             base.Dispose(disposing);
+            if (disposing && ownedFont != null) ownedFont.Dispose();
         }
     }
 }

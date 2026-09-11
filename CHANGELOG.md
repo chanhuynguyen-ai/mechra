@@ -2,6 +2,15 @@
 
 All notable changes to Mechra are recorded here.
 
+## [0.2.0-dev.6] — 2026-09-11 (frontend regression candidate)
+
+- Address defects reported in dev.5 screenshots: compact header/welcome, explicit pane regions, separate editor/action rectangles and no native white editor scrollbar.
+- Replace FlowLayoutPanel AutoScroll with a dark viewport/scrollbar; preserve historical reading position and expose unread replies through Tin mới.
+- Bound inline diagnostic details; keep full copy/export; remove repeated readiness explanations.
+- Add the observed `InkMarkupFolder` metadata type in both planner and native preflight. Real geometry renamed Markups remains blocked.
+- Add Windows STA WinForms tests of actual UI controls, invoked before COM registration; optional native control screenshots.
+- 28 Python test methods, source audit and compileall passed here. UI/C# compilation, Windows rendering and CAD acceptance remain pending; see `docs/VALIDATION_DEV6.md`.
+
 ## [0.2.0-dev.5] — 2026-09-11 (native UI and geometry candidate)
 
 - Replace the old log-form layout with a black native WinForms workspace: contextual conversation, reviewed CAD plan, metric cards, expandable details and a fixed composer.

@@ -2,9 +2,9 @@
 
 A mechanical design copilot embedded in the SOLIDWORKS Task Pane.
 
-**Current package: 0.2.0-dev.5 — development candidate, pending live SOLIDWORKS acceptance.**
+**Current package: 0.2.0-dev.6 — development candidate, pending live SOLIDWORKS acceptance.**
 
-Dev.5 refreshes the native Task Pane with a black product interface, contextual plan/result cards, measured metrics and expandable execution traces. It also strengthens rectangle-boundary validation and retains the Design Binder fix. See [UI notes and preview](docs/UI_DEV5.md). See [Windows instructions](RUN_WINDOWS.md).
+Dev.6 fixes the narrow-pane layout, replaces native white scrollbars, separates the editor from Send, bounds diagnostic previews and preserves the reading position. It also fixes false rejection of the Markups folder in a blank Part. See [UI changes and native test steps](docs/UI_DEV6.md). See [Windows instructions](RUN_WINDOWS.md).
 
 This candidate builds the first deterministic text-to-native-Part workflow:
 
@@ -51,6 +51,7 @@ Each supported mutation first produces a plan. The add-in checks the document id
 ```powershell
 .\scripts\setup-and-run.ps1 -AgentOnly
 .\scripts\test-csharp.ps1
+.\scripts\test-ui.ps1 -CaptureScreenshots
 ```
 
 Cross-platform Python tests:
@@ -63,7 +64,7 @@ cd ../..
 python scripts/smoke-http.py
 ```
 
-[Validation report](docs/VALIDATION_DEV5.md) separates completed Python/source checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
+[Validation report](docs/VALIDATION_DEV6.md) separates completed Python/source checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
 
 ## Project map
 

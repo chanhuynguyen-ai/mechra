@@ -63,6 +63,10 @@
     <Compile Include="Services\PersistentReferenceService.cs" />
     <Compile Include="UI\CopilotPanel.cs" />
     <Compile Include="UI\ProductControls.cs" />
+    <Compile Include="UI\ConversationViewport.cs" />
+    <Compile Include="UI\PromptComposer.cs" />
+    <Compile Include="UI\PaneRegions.cs" />
+    <Compile Include="UI\WelcomeCardFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="Exists('$(MSBuildToolsPath)\Microsoft.CSharp.targets')" />

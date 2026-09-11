@@ -237,7 +237,7 @@ namespace SwCursor.SolidWorksAddin.Services
             {
                 string type = SafeType(f);
                 if (!CadValidation.FeatureAllowed(new FeatureSnapshot { name = f.Name, type_name = type }, allowPlate))
-                    return "v0.2 cần Part trống để tạo mới hoặc plate do Mechra tạo để sửa chiều dày. Nếu muốn tạo plate mới: File > New > Part, rồi gửi lại yêu cầu. Feature ngoài phạm vi: " + f.Name + " (" + (type ?? "unknown") + "). Bấm Check Part rồi Save log để lưu chi tiết.";
+                    return "Feature ngoài phạm vi: " + f.Name + " [" + (type ?? "unknown") + "]. Tạo plate mới bằng File > New > Part; dùng Save log nếu Part đã trống.";
                 f = f.IGetNextFeature();
             }
             return f == null ? null : "Feature traversal limit reached; no changes were made.";

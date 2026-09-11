@@ -2,7 +2,7 @@
 BLANK_PART_TYPES = frozenset(name.casefold() for name in (
     'HistoryFolder', 'CommentsFolder', 'FavoriteFolder', 'SelectionSetFolder', 'SensorFolder',
     'DetailCabinet', 'MaterialFolder', 'SolidBodyFolder', 'SurfaceBodyFolder', 'RefPlane', 'OriginProfileFeature',
-    'DocsFolder', 'EnvFolder',
+    'DocsFolder', 'EnvFolder', 'InkMarkupFolder',
 ))
 
 

@@ -12,7 +12,7 @@ namespace SwCursor.SolidWorksAddin.Services
         private static readonly HashSet<string> TemplateFeatureTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
             "HistoryFolder", "CommentsFolder", "FavoriteFolder", "SelectionSetFolder", "SensorFolder",
             "DetailCabinet", "MaterialFolder", "SolidBodyFolder", "SurfaceBodyFolder", "RefPlane", "OriginProfileFeature",
-            "DocsFolder", "EnvFolder"
+            "DocsFolder", "EnvFolder", "InkMarkupFolder"
         };
 
         public static bool FeatureAllowed(FeatureSnapshot feature, bool allowPlate)

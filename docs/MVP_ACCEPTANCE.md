@@ -15,9 +15,9 @@
 
 ## Milestone v0.2 — First real vertical slice 🚧
 
-Implementation candidate is `0.2.0-dev.4`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
+Implementation candidate is `0.2.0-dev.6`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
 
-Observed progress: the user screenshot confirms dev.3 Task Pane loading and agent communication on SOLIDWORKS 2025 SP1.2. Geometry was blocked by a metadata classification error. Dev.4 addresses that error; actual create/edit acceptance is still open.
+Observed progress: user screenshots confirm dev.5 Task Pane loading and agent communication, but show narrow-pane UI defects and rejection of a zero-body Part containing Markups. Dev.6 addresses these with layout/scroll changes and type recognition. Actual native UI/CAD acceptance is still open.
 
 A user can type: `Create a 100 x 60 x 5 mm rectangular plate`.
 
@@ -63,3 +63,7 @@ Do not call the product manufacturing-ready until the test corpus has explicit m
 ## dev.5 candidate status
 
 26 Python test methods passed; native card UI, rectangle topology checks and execution trace implemented. C# build, UI/DPI and actual CAD acceptance remain open. See `VALIDATION_DEV5.md` and `UI_DEV5.md`. No milestone is promoted by this update.
+
+## dev.6 candidate status
+
+28 Python test methods passed. Windows UI regression tests are implemented and run by the installer before registration; their execution here is pending. C# build, native UI/DPI and CAD acceptance remain open. See `VALIDATION_DEV6.md`.

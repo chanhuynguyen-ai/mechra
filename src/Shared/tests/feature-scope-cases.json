@@ -53,6 +53,10 @@
       {
         "name": "Origin",
         "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Markups",
+        "type_name": "InkMarkupFolder"
       }
     ],
     "allow_plate": false,
@@ -613,6 +617,147 @@
       }
     ],
     "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "blank_template_with_markups",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Markups",
+        "type_name": "InkMarkupFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "localized_markups_folder",
+    "features": [
+      {
+        "name": "Ghi chu",
+        "type_name": "InkMarkupFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "markups_type_case_insensitive",
+    "features": [
+      {
+        "name": "Markups",
+        "type_name": "inkmarkupfolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "extrusion_renamed_markups",
+    "features": [
+      {
+        "name": "Markups",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "unknown_type_named_markups",
+    "features": [
+      {
+        "name": "Markups",
+        "type_name": "UnexpectedType"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "markup_folder_does_not_hide_sketch",
+    "features": [
+      {
+        "name": "Markups",
+        "type_name": "InkMarkupFolder"
+      },
+      {
+        "name": "Sketch1",
+        "type_name": "ProfileFeature"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "edit_mechra_plate_with_markups",
+    "features": [
+      {
+        "name": "Markups",
+        "type_name": "InkMarkupFolder"
+      },
+      {
+        "name": "Mechra-Plate-Sketch",
+        "type_name": "ProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": true,
     "accepted": true
   }
 ]

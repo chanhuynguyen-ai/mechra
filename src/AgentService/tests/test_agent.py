@@ -144,6 +144,17 @@ class AgentTests(unittest.TestCase):
         edit = self.ask('Đổi chiều dày thành 8 mm', context=context)
         self.assertEqual(edit.plan.operations[0].kind, 'modify_plate_thickness')
 
+    def test_markups_template_supports_create_and_clarification(self):
+        ctx = self.context.model_copy(update={'features': [FeatureInfo(name='Markups', type_name='InkMarkupFolder')]})
+        self.assertIsNotNone(self.ask('Tạo plate 100 x 60 x 5 mm', context=ctx).plan)
+        self.assertIsNone(self.ask('Tạo plate 100 x 60 mm', context=ctx).plan)
+        self.assertEqual(self.ask('5 mm', context=ctx).plan.operations[0].inputs['thickness_mm'], 5)
+
+    def test_markups_label_does_not_hide_geometry(self):
+        for kind in ('Extrusion', 'ProfileFeature', 'FtrFolder', None):
+            ctx = self.context.model_copy(update={'features': [FeatureInfo(name='Markups', type_name=kind)]})
+            self.assertIsNone(self.ask('Tạo plate 100 x 60 x 5 mm', context=ctx).plan)
+
     def test_design_binder_name_does_not_hide_real_or_unknown_geometry(self):
         for kind in ('Extrusion', 'ProfileFeature', 'FtrFolder', 'UnexpectedType', None):
             with self.subTest(kind=kind):

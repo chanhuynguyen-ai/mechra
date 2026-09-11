@@ -1,37 +1,41 @@
 {
-  "candidate": "0.2.0-dev.5",
+  "candidate": "0.2.0-dev.6",
   "runtime": {
     "python": "3.12.14",
     "pydantic": "2.13.5"
   },
   "completed": {
-    "planner_test_methods_passed": 21,
+    "planner_test_methods_passed": 23,
     "contract_verification_methods_passed": 2,
-    "shared_feature_scope_cases": 16,
+    "shared_feature_scope_cases": 23,
     "shared_measurement_vectors": 14,
     "source_audit": "passed",
     "python_compileall": "passed",
     "rectangle_methods_passed": 3,
     "rectangle_shared_cases": 20,
     "rectangle_permutations": 384,
-    "rectangle_nonfinite_variants": 18,
-    "illustrative_preview": "rendered and visually inspected; not native capture"
+    "rectangle_nonfinite_variants": 18
   },
   "user_evidence": {
-    "candidate": "0.2.0-dev.3",
-    "environment": "SOLIDWORKS Premium 2025 SP1.2",
+    "candidate": "0.2.0-dev.5",
     "task_pane_loaded": true,
     "agent_communication": true,
-    "observed_blocker": "Design Binder metadata classified as a nonblank Part",
+    "observed_blocker": "Markups InkMarkupFolder with zero solid/surface bodies",
+    "ui_defects_observed": [
+      "white native scrollbars",
+      "oversized welcome",
+      "composer layout",
+      "long diagnostic details"
+    ],
     "native_create_verified": false
   },
   "pending": [
-    "Full 32-method Python HTTP/schema suite and real HTTP smoke",
+    "Full 34-method Python HTTP/schema suite and real HTTP smoke",
     "Windows PowerShell parser/process tests",
-    "dev.5 C# build and pure tests",
-    "dev.5 native UI, resize, DPI, keyboard and disposal",
-    "Native create/edit/rebuild and volume verification",
-    "Native Undo/failure rollback"
+    "dev.6 C# build and pure tests",
+    "New native WinForms UI harness",
+    "dev.6 SOLIDWORKS-hosted UI, resize, DPI, keyboard and disposal",
+    "Native create/edit/rebuild/volume and Undo/rollback"
   ],
   "cad_live_pass_claimed": false
 }

@@ -139,10 +139,10 @@ class MechraAgent:
                     'Muốn tạo plate khác: File > New > Part, rồi gửi lại lệnh tạo plate.')
         feature = first_blocking_feature(ctx.features)
         if feature is not None:
-            return (f'Part "{ctx.document_title or "hiện tại"}" có feature "{feature.name}" '
-                    f'(type: {feature.type_name or "không đọc được"}); '
-                    'v0.2 cần Part trống để tạo plate. Chọn File > New > Part, rồi gửi lại '
-                    '"Tạo plate 100 x 60 x 5 mm". Nếu đây là Part mới, bấm Check Part rồi Save log để kiểm tra type của feature.')
+            return (f'Chưa thể tạo plate: "{feature.name}" '
+                    f'[{feature.type_name or "không đọc được type"}] nằm ngoài phạm vi hỗ trợ. '
+                    'Nếu tạo plate mới, chọn File > New > Part. '
+                    'Nếu Part đã trống, dùng Check Part và Save log để kiểm tra.')
         return None
 
     @staticmethod
