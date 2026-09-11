@@ -1,0 +1,93 @@
+[
+  {
+    "name": "empty",
+    "state": {
+      "count": 0,
+      "disabled_count": 0,
+      "linked_to_file": false
+    },
+    "native_accepted": true,
+    "planner_accepted": true
+  },
+  {
+    "name": "equations_or_global_variables",
+    "state": {
+      "count": 2,
+      "disabled_count": 0,
+      "linked_to_file": false
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "disabled_entries_even_when_count_is_zero",
+    "state": {
+      "count": 0,
+      "disabled_count": 1,
+      "linked_to_file": false
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "empty_but_linked_to_file",
+    "state": {
+      "count": 0,
+      "disabled_count": 0,
+      "linked_to_file": true
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "entries_and_external_link",
+    "state": {
+      "count": 2,
+      "disabled_count": 0,
+      "linked_to_file": true
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "unavailable_native_read",
+    "state": null,
+    "native_accepted": false,
+    "planner_accepted": true
+  },
+  {
+    "name": "negative_count",
+    "state": {
+      "count": -1,
+      "disabled_count": 0,
+      "linked_to_file": false
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "negative_disabled_count",
+    "state": {
+      "count": 0,
+      "disabled_count": -1,
+      "linked_to_file": false
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "missing_all_fields",
+    "state": {},
+    "native_accepted": false,
+    "planner_accepted": false
+  },
+  {
+    "name": "missing_link_state",
+    "state": {
+      "count": 0,
+      "disabled_count": 0
+    },
+    "native_accepted": false,
+    "planner_accepted": false
+  }
+]

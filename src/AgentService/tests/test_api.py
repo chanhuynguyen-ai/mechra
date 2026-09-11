@@ -25,6 +25,19 @@ class ApiTests(unittest.TestCase):
         for payload in [{'message':''},{'message':'   '},{'message':'x'*4001},{'message':'test','surprise':True},{'message':'test','context':{'document_type':'invalid'}}]:
             with self.subTest(payload=str(payload)[:80]):
                 self.assertEqual(self.client.post('/v1/chat',json=payload).status_code,422)
+    def test_equation_snapshot_survives_http_contract(self):
+        context = {'document_type':'part','features':[{'name':'Equations','type_name':'EqnFolder'}],
+                   'equations':{'count':0,'disabled_count':0,'linked_to_file':False}}
+        payload = {'message':'Tạo plate 100 x 60 x 5 mm','context':context}
+        reply = self.client.post('/v1/chat',json=payload)
+        self.assertEqual(reply.status_code,200)
+        self.assertIsNotNone(reply.json()['plan'])
+        context['equations']['count'] = 1
+        reply = self.client.post('/v1/chat',json=payload)
+        self.assertEqual(reply.status_code,200)
+        self.assertIsNone(reply.json()['plan'])
+        context['equations']['count'] = '0'
+        self.assertEqual(self.client.post('/v1/chat',json=payload).status_code,422)
     def test_malformed_json(self):
         self.assertEqual(self.client.post('/v1/chat',content=b'{bad',headers={'Content-Type':'application/json'}).status_code,422)
     def test_nonfinite_verification_is_safe_422(self):

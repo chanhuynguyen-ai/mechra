@@ -12,7 +12,7 @@ namespace SwCursor.SolidWorksAddin.UI
 {
     public sealed class CopilotPanel : UserControl
     {
-        private const string Release = "0.2.0-dev.6";
+        private const string Release = "0.2.0-dev.7";
         private readonly ModelContextService _context;
         private readonly AgentClient _agent;
         private readonly CadExecutor _executor;
@@ -285,6 +285,9 @@ namespace SwCursor.SolidWorksAddin.UI
                 card.Add(ProductTheme.Label(report.can_create ? "Sẵn sàng tạo plate mới." : report.can_edit ? "Sẵn sàng sửa chiều dày plate Mechra." : "Part chưa đáp ứng điều kiện.", 10,
                     report.can_create || report.can_edit ? ProductTheme.Success : ProductTheme.Warning));
                 string details = c.document_type + " / " + c.configuration + "\nSolid bodies: " + report.solid_bodies + " | Surface bodies: " + report.surface_bodies
+                    + "\nEquations (GetCount): " + (report.equations == null ? "Không đọc được" : report.equations.count.ToString())
+                    + "\nDisabled equations: " + (report.equations == null ? "Không đọc được" : report.equations.disabled_count.ToString())
+                    + "\nEquation file linked: " + (report.equations?.linked_to_file == null ? "Không đọc được" : report.equations.linked_to_file == true ? "Có" : "Không")
                     + (report.create_issue != null && report.create_issue == report.edit_issue
                         ? "\nĐiều kiện: " + report.create_issue
                         : "\nTạo plate: " + (report.create_issue ?? "Sẵn sàng") + "\nSửa chiều dày: " + (report.edit_issue ?? "Sẵn sàng"))

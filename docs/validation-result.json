@@ -1,40 +1,51 @@
 {
-  "candidate": "0.2.0-dev.6",
+  "candidate": "0.2.0-dev.7",
   "runtime": {
     "python": "3.12.14",
     "pydantic": "2.13.5"
   },
   "completed": {
+    "application_test_methods_passed": 35,
     "planner_test_methods_passed": 23,
+    "equation_test_methods_passed": 7,
     "contract_verification_methods_passed": 2,
-    "shared_feature_scope_cases": 23,
-    "shared_measurement_vectors": 14,
-    "source_audit": "passed",
-    "python_compileall": "passed",
     "rectangle_methods_passed": 3,
+    "source_audit_regression_methods_passed": 5,
+    "shared_feature_scope_cases": 31,
+    "shared_equation_state_cases": 10,
+    "shared_measurement_vectors": 14,
     "rectangle_shared_cases": 20,
     "rectangle_permutations": 384,
-    "rectangle_nonfinite_variants": 18
+    "rectangle_nonfinite_variants": 18,
+    "source_audit": "passed",
+    "python_compileall": "passed",
+    "csharp_delimiter_files_checked": 18
   },
+  "full_python_suite_methods": 42,
   "user_evidence": {
-    "candidate": "0.2.0-dev.5",
-    "task_pane_loaded": true,
+    "ui": "compact dev.6-style pane loaded; exact DLL identity is not visible",
     "agent_communication": true,
-    "observed_blocker": "Markups InkMarkupFolder with zero solid/surface bodies",
-    "ui_defects_observed": [
-      "white native scrollbars",
-      "oversized welcome",
-      "composer layout",
-      "long diagnostic details"
-    ],
+    "observed_blocker": "Equations [EqnFolder] in apparently blank Part1",
+    "actual_equation_count": "not visible in screenshots",
     "native_create_verified": false
   },
+  "prior_dev6_windows_log": {
+    "source": "Pasted text(9).txt",
+    "powershell_scripts_parsed": 13,
+    "synthetic_process_health_checks_passed": 18,
+    "python_test_methods_passed": 34,
+    "http_smoke_passed": true,
+    "matching_agent_started": true,
+    "csharp_build_passed": false,
+    "build_error": "CS1513: missing namespace closure in WelcomeCardFactory.cs",
+    "native_tests_reached": false,
+    "registration_reached": false
+  },
   "pending": [
-    "Full 34-method Python HTTP/schema suite and real HTTP smoke",
-    "Windows PowerShell parser/process tests",
-    "dev.6 C# build and pure tests",
-    "New native WinForms UI harness",
-    "dev.6 SOLIDWORKS-hosted UI, resize, DPI, keyboard and disposal",
+    "Full dev.7 HTTP/schema suite and HTTP smoke",
+    "PowerShell execution",
+    "C# build and pure tests",
+    "WinForms UI harness and SOLIDWORKS-hosted DPI/keyboard",
     "Native create/edit/rebuild/volume and Undo/rollback"
   ],
   "cad_live_pass_claimed": false

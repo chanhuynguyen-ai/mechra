@@ -23,6 +23,7 @@ namespace SwCursor.SolidWorksAddin.UI
                 BackColor = ProductTheme.Surface, ForeColor = ProductTheme.Text,
                 AccessibleName = "Nhập yêu cầu CAD, đơn vị mm" };
             _placeholder = ProductTheme.Label("Bạn muốn tạo hoặc sửa plate?", 9, ProductTheme.Muted);
+            _placeholder.Name = "PromptPlaceholder"; _placeholder.TabStop = false;
             _placeholder.AutoSize = false; _placeholder.AutoEllipsis = true; _placeholder.Dock = DockStyle.None;
             _placeholder.Cursor = Cursors.IBeam; _placeholder.Click += (_, __) => Editor.Focus();
             _hint = ProductTheme.Label("Shift+Enter: xuống dòng", 7.5F, ProductTheme.Muted);
@@ -30,8 +31,16 @@ namespace SwCursor.SolidWorksAddin.UI
             _hint.TextAlign = ContentAlignment.MiddleLeft;
             SendButton = new ProductButton("Gửi ↑", 64, true) { Enabled = false };
             Controls.AddRange(new Control[] { Editor, _placeholder, _hint, SendButton });
-            Editor.GotFocus += (_, __) => Invalidate(); Editor.LostFocus += (_, __) => Invalidate();
-            Editor.TextChanged += (_, __) => { _placeholder.Visible = Editor.TextLength == 0; PerformLayout(); };
+            _placeholder.BringToFront();
+            Editor.GotFocus += (_, __) => UpdatePlaceholder(); Editor.LostFocus += (_, __) => UpdatePlaceholder();
+            Editor.TextChanged += (_, __) => { UpdatePlaceholder(); PerformLayout(); };
+            UpdatePlaceholder();
+        }
+        private void UpdatePlaceholder()
+        {
+            // The hint must be above the empty native TextBox, but never cover its caret.
+            _placeholder.Visible = Editor.TextLength == 0 && !Editor.Focused;
+            Invalidate();
         }
         protected override void OnLayout(LayoutEventArgs e)
         {

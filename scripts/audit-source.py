@@ -6,9 +6,11 @@ import json
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from check_csharp_delimiters import check_tree
 
 ROOT=Path(__file__).resolve().parents[1]
 version=(ROOT/'VERSION').read_text().strip()
+cs_checked = check_tree(ROOT)
 sys.path.insert(0,str(ROOT/'src/AgentService'))
 tree=ast.parse((ROOT/'src/AgentService/app/main.py').read_text())
 app_version=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign)
@@ -38,4 +40,5 @@ before={p:p.read_bytes() for p in paths}
 subprocess.run([sys.executable,str(ROOT/'scripts/generate-contracts.py')],check=True)
 assert all(p.read_bytes()==raw for p,raw in before.items()),'Generated contracts drifted'
 print(f'PASS source audit: version {version}, {len(actual)} C# compile items, PowerShell encodings and {len(paths)} stable schemas.')
+print(f'PASS lexical delimiter balance: {cs_checked} C# files. This is not a C# compiler.')
 print('C# compilation and PowerShell execution remain Windows validation gates.')

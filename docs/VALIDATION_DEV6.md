@@ -33,8 +33,23 @@ python -m compileall -q src/AgentService scripts
 
 This environment has no Windows, C# compiler, PowerShell or SOLIDWORKS. The UI harness and C# source have not been compiled or run here. They must pass on Windows, followed by the actual SOLIDWORKS hosting checks in `UI_DEV6.md`.
 
-Also pending: full 34-method Python suite and real HTTP smoke (FastAPI/Uvicorn/jsonschema unavailable here); PowerShell parsing/process tests; native Check Part/create/edit/rebuild/volume/Undo/rollback.
+The full 34-method Python suite, HTTP smoke and PowerShell checks were initially pending in the assistant environment; the subsequent user log below confirms they passed on Windows. Native Check Part/create/edit/rebuild/volume/Undo/rollback remain pending.
 
 ## Scope
 
 Preserves the existing CAD plan/confirmation/revision/transaction rules. Changes the UI layout/scroll controls and metadata recognition; does not introduce LLM providers or a general CAD repair planner. The milestone v0.2 gate remains open.
+
+## Build fix 1 — follow-up evidence and correction
+
+The uploaded `Pasted text(9).txt` records this Windows run:
+
+- 13 PowerShell scripts parsed; 18 synthetic process/health checks passed.
+- All 34 Python test methods passed; matching local agent started; real HTTP smoke passed.
+- MSBuild 18.5.4 failed at `UI/WelcomeCardFactory.cs(27,6)` with CS1513 (`} expected`).
+- C# contract/UI tests and COM registration were not reached.
+
+The namespace closure was missing from the file shipped by the assistant. This fix adds that one `}`. The original ZIP reproduces an unclosed namespace in the new lexical audit. The corrected source passes the 18-file delimiter audit, all five audit regression methods and the existing source audit. This does not prove C# compilation/type checking or UI rendering has passed.
+
+Python runtime code/dependencies and version 0.2.0-dev.6 are unchanged by this build fix. Preserve the current environment; replace the affected source file and run `scripts/install.ps1` in the same dev.6 directory, without an old-project argument. The already matching agent can be reused.
+
+`check_csharp_delimiters.py` is deliberately a limited scanner for this C# source tree. It ignores comments, ordinary/verbatim literals and characters; interpolated strings require a real parser. It does not validate APIs, types or all language syntax. C# compilation remains required.

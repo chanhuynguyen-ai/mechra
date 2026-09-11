@@ -26,6 +26,12 @@ public sealed class RectangleCase
     public double width_mm { get; set; }
     public double height_mm { get; set; }
 }
+public sealed class EquationCase
+{
+    public string name { get; set; }
+    public EquationStateSnapshot state { get; set; }
+    public bool native_accepted { get; set; }
+}
 public static class CadValidationTests
 {
     private static int _count;
@@ -35,6 +41,7 @@ public static class CadValidationTests
             inputs=new Dictionary<string,object>{{"width_mm",100},{"height_mm",60},{"thickness_mm",5}}} } };
     private static ModelContextSnapshot Context() => new ModelContextSnapshot {document_id="doc-A", document_type="part",
         document_title="Part1", configuration="Default", update_stamp=1,
+        equations=new EquationStateSnapshot {count=0,disabled_count=0,linked_to_file=false},
         features=new List<FeatureSnapshot> {new FeatureSnapshot {name="Front",type_name="RefPlane"}}};
     public static int Main(string[] args)
     {
@@ -60,6 +67,10 @@ public static class CadValidationTests
             after=Context();after.configuration="other";Check(!ModelRevision.Same(before,after),"configuration changed");
             after=Context();after.features[0].name="renamed";Check(!ModelRevision.Same(before,after),"rename without stamp change");
             after=Context();after.path="C:\\saved.sldprt";Check(!ModelRevision.Same(before,after),"save as");
+            after=Context();after.equations.count=1;Check(!ModelRevision.Same(before,after),"equation added without stamp change");
+            after=Context();after.equations.disabled_count=1;Check(!ModelRevision.Same(before,after),"disabled equation added");
+            after=Context();after.equations.linked_to_file=true;Check(!ModelRevision.Same(before,after),"equation file linked");
+            after=Context();after.equations=null;Check(!ModelRevision.Same(before,after),"equation API read failed");
             Check(!ModelRevision.Same(null,after),"no reviewed document");
             foreach (var item in new JavaScriptSerializer().Deserialize<List<VerificationCase>>(File.ReadAllText(args[0])))
                 Check(CadValidation.Verify(item.snapshot).passed==item.passed,"verification: "+item.name);
@@ -73,6 +84,9 @@ public static class CadValidationTests
                 if (item.valid) Check(Math.Abs(measurement.width_mm - item.width_mm) < 1e-7
                     && Math.Abs(measurement.height_mm - item.height_mm) < 1e-7, "rectangle dimensions: " + item.name);
             }
+            foreach (var item in new JavaScriptSerializer().Deserialize<List<EquationCase>>(File.ReadAllText(args[3])))
+                Check((CadValidation.EquationIssue(item.state) == null) == item.native_accepted,
+                    "equation state: " + item.name);
             Check(!RectangleGeometry.Measure(null).valid, "null sketch edges");
             var nonfinite = new List<SketchEdgeSnapshot> { new SketchEdgeSnapshot { x1=double.NaN },
                 new SketchEdgeSnapshot(), new SketchEdgeSnapshot(), new SketchEdgeSnapshot() };

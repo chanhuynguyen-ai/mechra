@@ -8,7 +8,7 @@ from .agent import MechraAgent
 from .models import CadVerificationRequest, CadVerificationResponse, ChatRequest, ChatResponse
 from .verification import verify
 
-VERSION = '0.2.0-dev.6'
+VERSION = '0.2.0-dev.7'
 _source = Path(__file__).parent
 BUILD_ID = hashlib.sha256(b''.join(p.read_bytes() for p in sorted(_source.glob('*.py')))).hexdigest()[:16]
 app = FastAPI(title='Mechra Agent', version=VERSION)

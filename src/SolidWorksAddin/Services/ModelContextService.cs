@@ -29,7 +29,8 @@ namespace SwCursor.SolidWorksAddin.Services
                 configuration = model.ConfigurationManager.ActiveConfiguration.Name,
                 document_title = model.GetTitle(),
                 path = model.GetPathName(),
-                document_type = ToDocumentType(model.GetType())
+                document_type = ToDocumentType(model.GetType()),
+                equations = ReadEquations(model)
             };
 
             Feature feature = model.IFirstFeature();
@@ -45,6 +46,22 @@ namespace SwCursor.SolidWorksAddin.Services
             }
             if (feature != null) throw new InvalidOperationException("Feature traversal limit reached.");
             return snapshot;
+        }
+
+        // Fresh manager per capture/preflight: it belongs to the current configuration.
+        // Read-only; never evaluates, disables or deletes an equation or linked file.
+        internal static EquationStateSnapshot ReadEquations(ModelDoc2 model)
+        {
+            try
+            {
+                var manager = model.GetEquationMgr();
+                if (manager == null) return null;
+                int count = manager.GetCount(), disabled = manager.GetDisabledEquationCount();
+                if (count < 0 || disabled < 0) return null;
+                return new EquationStateSnapshot { count = count,
+                    disabled_count = disabled, linked_to_file = manager.LinkToFile };
+            }
+            catch { return null; } // Unknown must be rejected by native preflight, not treated as zero.
         }
 
         private static string SafeTypeName(Feature feature)

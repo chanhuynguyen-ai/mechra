@@ -4,7 +4,7 @@
 Native SOLIDWORKS add-in, Task Pane, model context, local agent boundary, persistent-reference foundation and shared contracts. Live-tested in SOLIDWORKS 2025 SP1.2.
 
 ## v0.2.0 — Text → Native Part 🚧
-Candidate `0.2.0-dev.6` fixes narrow-pane/composer/scroll/diagnostic layout and Markups metadata recognition. Twenty-eight Python test methods pass locally. The user's new dev.5 screenshots confirm the native pane loads but reveal these UI defects and a zero-body Part blocked by InkMarkupFolder. A Windows WinForms regression gate is now included before registration; dev.6 native UI/build and actual CAD acceptance remain pending. Details: `VALIDATION_DEV6.md` and `UI_DEV6.md`.
+Candidate `0.2.0-dev.7` corrects the Equations (`EqnFolder`) false rejection with native equation-state inspection and fixes the invisible composer prompt. Latest user screenshots confirm a compact pane loading and agent communication, but creation is still blocked in the supplied evidence. Here, 35 Python application tests and five source-audit regressions pass. Native build/UI and actual CAD acceptance for dev.7 remain pending. See `VALIDATION_DEV7.md`.
 
 Acceptance target: `Create a 100 x 60 x 5 mm plate` produces an editable native sketch + extrusion; `change thickness to 8 mm` edits the existing design; rebuild and measured verification pass.
 

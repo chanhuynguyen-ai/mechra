@@ -15,9 +15,9 @@
 
 ## Milestone v0.2 — First real vertical slice 🚧
 
-Implementation candidate is `0.2.0-dev.6`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
+Implementation candidate is `0.2.0-dev.7`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
 
-Observed progress: user screenshots confirm dev.5 Task Pane loading and agent communication, but show narrow-pane UI defects and rejection of a zero-body Part containing Markups. Dev.6 addresses these with layout/scroll changes and type recognition. Actual native UI/CAD acceptance is still open.
+Observed progress: latest screenshots show the compact dark pane loading and agent replies, but Part1 is blocked by Equations (`EqnFolder`) and no native plate has been demonstrated. Dev.7 separates folder classification from actual equation-state inspection and restores the missing prompt. Native UI/CAD acceptance remains open.
 
 A user can type: `Create a 100 x 60 x 5 mm rectangular plate`.
 
@@ -67,3 +67,11 @@ Do not call the product manufacturing-ready until the test corpus has explicit m
 ## dev.6 candidate status
 
 28 Python test methods passed. Windows UI regression tests are implemented and run by the installer before registration; their execution here is pending. C# build, native UI/DPI and CAD acceptance remain open. See `VALIDATION_DEV6.md`.
+
+## dev.6 build fix 1
+
+User log confirms the full 34 Python tests and HTTP smoke passed. C# compilation failed with CS1513 in WelcomeCardFactory.cs; the missing namespace brace is now corrected. Local lexical checks pass for 18 C# files, but native C# build, UI tests, registration and CAD acceptance remain open.
+
+## dev.7 candidate status
+
+35 Python application methods and five source-audit regressions passed here. Added equation-state and placeholder regression gates. Full dev.7 HTTP/schema, C# build/tests, native UI harness and SOLIDWORKS create/edit remain pending. See `VALIDATION_DEV7.md`.

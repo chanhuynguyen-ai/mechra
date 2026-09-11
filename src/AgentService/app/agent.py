@@ -6,7 +6,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from threading import RLock
 
-from .feature_policy import BLANK_PART_TYPES, first_blocking_feature
+from .feature_policy import BLANK_PART_TYPES, first_blocking_feature, equation_blocker
 from .models import CadOperation, CadPlan, ChatRequest, ChatResponse, DesignSpec, SpecItem
 
 NUMBER = r'[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)'
@@ -116,7 +116,12 @@ class MechraAgent:
                             rf'(?:(?:thanh|to|la|=)\s*)?({NUMBER})\s*(mm)?', text)
         if edit:
             if ctx.document_type != 'part' or not self._has_plate(ctx):
-                return ChatResponse(message='Hãy mở Part chứa Mechra-Plate-Extrude trước khi sửa chiều dày.')
+                return ChatResponse(message='Chưa có plate Mechra để sửa chiều dày. '
+                                    'Hãy tạo plate và áp dụng kế hoạch thành công trước, '
+                                    'hoặc mở Part đã chứa Mechra-Plate-Extrude.')
+            equation_issue = equation_blocker(ctx.equations)
+            if equation_issue:
+                return ChatResponse(message=equation_issue)
             thickness = number(edit[1])
             if not valid([thickness]):
                 return self._clarify('Chiều dày phải lớn hơn 0 và không vượt quá 10,000 mm.')
@@ -134,6 +139,9 @@ class MechraAgent:
 
     @staticmethod
     def _creation_blocker(ctx):
+        equation_issue = equation_blocker(ctx.equations)
+        if equation_issue:
+            return equation_issue
         if MechraAgent._has_plate(ctx):
             return ('Part đã có Mechra-Plate-Extrude. Hãy sửa chiều dày của plate hiện tại. '
                     'Muốn tạo plate khác: File > New > Part, rồi gửi lại lệnh tạo plate.')

@@ -15,6 +15,13 @@ class FeatureInfo(Contract):
     type_name: str | None = None
 
 
+class EquationState(Contract):
+    # Counts are separate API readings; do not add them or infer state from EqnFolder.
+    count: int = Field(ge=0, strict=True)
+    disabled_count: int = Field(ge=0, strict=True)
+    linked_to_file: StrictBool
+
+
 class ModelContext(Contract):
     document_title: str | None = None
     path: str | None = None
@@ -22,6 +29,7 @@ class ModelContext(Contract):
     document_id: str | None = Field(default=None, max_length=128)
     update_stamp: int | None = None
     configuration: str | None = None
+    equations: EquationState | None = None
     features: list[FeatureInfo] = Field(default_factory=list, max_length=5000)
 
 

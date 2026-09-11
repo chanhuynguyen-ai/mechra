@@ -1,6 +1,6 @@
 [
   {
-    "name": "blank_template_with_design_binder_and_environment",
+    "name": "blank_template_with_all_observed_metadata",
     "features": [
       {
         "name": "History",
@@ -57,6 +57,10 @@
       {
         "name": "Markups",
         "type_name": "InkMarkupFolder"
+      },
+      {
+        "name": "Equations",
+        "type_name": "EqnFolder"
       }
     ],
     "allow_plate": false,
@@ -759,5 +763,101 @@
     ],
     "allow_plate": true,
     "accepted": true
+  },
+  {
+    "name": "equations_folder_requires_separate_state_check",
+    "features": [
+      {
+        "name": "Equations",
+        "type_name": "EqnFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "localized_equations_folder",
+    "features": [
+      {
+        "name": "Phuong trinh",
+        "type_name": "eqnfolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "equations_label_cannot_hide_extrusion",
+    "features": [
+      {
+        "name": "Equations",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "equations_label_cannot_hide_unknown_type",
+    "features": [
+      {
+        "name": "Equations",
+        "type_name": null
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "equations_folder_does_not_hide_sketch",
+    "features": [
+      {
+        "name": "Equations",
+        "type_name": "EqnFolder"
+      },
+      {
+        "name": "Sketch1",
+        "type_name": "ProfileFeature"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "equations_folder_with_editable_plate",
+    "features": [
+      {
+        "name": "Equations",
+        "type_name": "EqnFolder"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": true,
+    "accepted": true
+  },
+  {
+    "name": "design_table_is_not_empty_metadata",
+    "features": [
+      {
+        "name": "Design Table",
+        "type_name": "DesignTableFeature"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "arbitrary_folder_suffix_is_not_a_template_rule",
+    "features": [
+      {
+        "name": "Metadata",
+        "type_name": "UnexpectedFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
   }
 ]

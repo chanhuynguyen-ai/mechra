@@ -12,7 +12,7 @@ namespace SwCursor.SolidWorksAddin.Services
         private static readonly HashSet<string> TemplateFeatureTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
             "HistoryFolder", "CommentsFolder", "FavoriteFolder", "SelectionSetFolder", "SensorFolder",
             "DetailCabinet", "MaterialFolder", "SolidBodyFolder", "SurfaceBodyFolder", "RefPlane", "OriginProfileFeature",
-            "DocsFolder", "EnvFolder", "InkMarkupFolder"
+            "DocsFolder", "EnvFolder", "InkMarkupFolder", "EqnFolder"
         };
 
         public static bool FeatureAllowed(FeatureSnapshot feature, bool allowPlate)
@@ -22,6 +22,15 @@ namespace SwCursor.SolidWorksAddin.Services
             if (TemplateFeatureTypes.Contains(type)) return true;
             return allowPlate && ((feature.name == "Mechra-Plate-Extrude" && (type == "Extrusion" || type == "Boss" || type == "BaseBody"))
                 || (feature.name == "Mechra-Plate-Sketch" && type == "ProfileFeature"));
+        }
+
+        public static string EquationIssue(EquationStateSnapshot state)
+        {
+            if (state == null || state.count < 0 || state.disabled_count < 0 || !state.linked_to_file.HasValue)
+                return "Không đọc được trạng thái Equations qua SOLIDWORKS API. Bấm Check Part để thử lại và Save log nếu lỗi còn lặp lại.";
+            if (state.count != 0 || state.disabled_count != 0 || state.linked_to_file == true)
+                return "Part có phương trình, biến toàn cục hoặc liên kết tệp phương trình. v0.2 chưa hỗ trợ tạo/sửa plate trong trạng thái này. Hãy dùng Part riêng không có phương trình.";
+            return null;
         }
 
         public static bool Positive(double value) => !double.IsNaN(value) && !double.IsInfinity(value) && value > 0;

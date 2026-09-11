@@ -77,7 +77,7 @@ namespace SwCursor.SolidWorksAddin.Services
             if (error != null) return Fail(error);
             CadOperation op = plan.operations[0];
             trace.Mark("preflight", "Kiểm tra điều kiện tạo hoặc sửa Part...");
-            error = Preflight(model, op);
+            error = Preflight(model, op, ModelContextService.ReadEquations(model));
             if (error != null) return Fail(error);
             trace.Mark("checkpoint", "Ghi nhận trạng thái trước thao tác...");
             Baseline baseline = CaptureBaseline(model);
@@ -181,8 +181,9 @@ namespace SwCursor.SolidWorksAddin.Services
                 report.document_title = model.GetTitle();
                 report.solid_bodies = BodyCount(model, swBodyType_e.swSolidBody);
                 report.surface_bodies = BodyCount(model, swBodyType_e.swSheetBody);
-                report.create_issue = Preflight(model, new CadOperation { kind = "create_plate" });
-                report.edit_issue = Preflight(model, new CadOperation { kind = "modify_plate_thickness" });
+                report.equations = ModelContextService.ReadEquations(model);
+                report.create_issue = Preflight(model, new CadOperation { kind = "create_plate" }, report.equations);
+                report.edit_issue = Preflight(model, new CadOperation { kind = "modify_plate_thickness" }, report.equations);
                 return report;
             }
             catch (Exception ex)
@@ -192,8 +193,10 @@ namespace SwCursor.SolidWorksAddin.Services
             }
         }
 
-        private static string Preflight(ModelDoc2 model, CadOperation op)
+        private static string Preflight(ModelDoc2 model, CadOperation op, EquationStateSnapshot equations)
         {
+            string equationIssue = CadValidation.EquationIssue(equations);
+            if (equationIssue != null) return equationIssue;
             string scopeError = ValidateFeatureScope(model, op.kind == "modify_plate_thickness");
             if (scopeError != null) return scopeError;
             // This slice deliberately rejects extra solid/sheet bodies and existing sketch work.
@@ -233,19 +236,29 @@ namespace SwCursor.SolidWorksAddin.Services
         {
             Feature f = model.IFirstFeature();
             int guard = 0;
+            int blocked = 0;
+            var examples = new List<string>();
             while (f != null && guard++ < 5000)
             {
                 string type = SafeType(f);
                 if (!CadValidation.FeatureAllowed(new FeatureSnapshot { name = f.Name, type_name = type }, allowPlate))
-                    return "Feature ngoài phạm vi: " + f.Name + " [" + (type ?? "unknown") + "]. Tạo plate mới bằng File > New > Part; dùng Save log nếu Part đã trống.";
+                {
+                    blocked++;
+                    if (examples.Count < 4) examples.Add(f.Name + " [" + (type ?? "unknown") + "]");
+                }
                 f = f.IGetNextFeature();
             }
-            return f == null ? null : "Feature traversal limit reached; no changes were made.";
+            if (f != null) return "Feature traversal limit reached; no changes were made.";
+            if (blocked == 0) return null;
+            return "Feature ngoài phạm vi (" + blocked + "): " + string.Join(", ", examples)
+                + (blocked > examples.Count ? ", ..." : "")
+                + ". Xem Chi tiết Part hoặc Save log để xem toàn bộ cây feature. Tạo plate mới bằng File > New > Part nếu Part đã có hình hoặc sketch.";
         }
 
         private Baseline CaptureBaseline(ModelDoc2 model)
         {
             var snapshot = _context.Capture();
+            if (CadValidation.EquationIssue(snapshot.equations) != null) return null;
             int count = BodyCount(model, swBodyType_e.swSolidBody);
             if (count < 0) return null;
             var baseline = new Baseline { Features = ModelRevision.FeatureSignature(snapshot),

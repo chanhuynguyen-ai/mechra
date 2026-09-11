@@ -74,6 +74,19 @@ internal static class UiLayoutTests
                         Check((GetWindowLong(composer.Editor.Handle, -16) & 0x00200000) == 0, "native white editor scrollbar returned");
                     }
                     composer.Editor.Clear(); layout(); layout();
+                    var placeholder = composer.Controls["PromptPlaceholder"];
+                    form.ActiveControl = null;
+                    Check(!composer.Editor.Focused, "cannot move focus out of editor");
+                    Check(placeholder.Visible, "empty unfocused editor lost its prompt");
+                    Check(composer.GetChildAtPoint(new Point(composer.Editor.Left + 2, composer.Editor.Top + 2)) == placeholder,
+                        "placeholder is behind the native TextBox");
+                    composer.Editor.Focus();
+                    Check(!placeholder.Visible, "placeholder covers focused caret");
+                    composer.Editor.Text = "Tạo plate 100 x 60 x 5 mm";
+                    form.ActiveControl = null;
+                    Check(!placeholder.Visible, "placeholder covers a draft");
+                    composer.Editor.Clear();
+                    Check(placeholder.Visible, "placeholder did not return after clearing draft");
                     feed.ClearCards();
                     string drafted = null;
                     var welcome = WelcomeCardFactory.Create(value => drafted = value, dpi);

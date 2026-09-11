@@ -2,9 +2,9 @@
 
 A mechanical design copilot embedded in the SOLIDWORKS Task Pane.
 
-**Current package: 0.2.0-dev.6 — development candidate, pending live SOLIDWORKS acceptance.**
+**Current package: 0.2.0-dev.7 — development candidate, pending live SOLIDWORKS acceptance.**
 
-Dev.6 fixes the narrow-pane layout, replaces native white scrollbars, separates the editor from Send, bounds diagnostic previews and preserves the reading position. It also fixes false rejection of the Markups folder in a blank Part. See [UI changes and native test steps](docs/UI_DEV6.md). See [Windows instructions](RUN_WINDOWS.md).
+Dev.7 fixes false rejection of `Equations [EqnFolder]` by inspecting actual equation state separately, and restores the empty composer prompt. It keeps the compact dark native UI and the prior missing-brace fix. See [validation and scope](docs/VALIDATION_DEV7.md) and [Windows upgrade instructions](RUN_WINDOWS.md).
 
 This candidate builds the first deterministic text-to-native-Part workflow:
 
@@ -41,6 +41,7 @@ Each supported mutation first produces a plan. The add-in checks the document id
 - Bare dimensions assume mm and the conversation explicitly identifies that assumption.
 - Negative/zero/oversized dimensions, unsupported units and extra requested operations do not produce partial executable plans.
 - Existing extra features, surface bodies, multiple solid bodies, read-only documents and an open sketch edit session block execution.
+- Existing equations/global variables, disabled equations, linked equation files or an unreadable equation state block native execution. An empty Equations folder alone does not.
 - Width/height are driving dimensions; full sketch definition/anchoring has not been demonstrated.
 - Native Undo groups are named `Mechra: ...`. Use SOLIDWORKS' Undo list to choose the intended group. No delayed blind Undo button is exposed.
 - Rollback is best effort and verifies the feature list, body count, plate dimensions and volume; it is not a byte-for-byte document recovery guarantee.
@@ -64,7 +65,7 @@ cd ../..
 python scripts/smoke-http.py
 ```
 
-[Validation report](docs/VALIDATION_DEV6.md) separates completed Python/source checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
+[Validation report](docs/VALIDATION_DEV7.md) separates completed Python/source checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
 
 ## Project map
 

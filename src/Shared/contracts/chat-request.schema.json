@@ -1,5 +1,31 @@
 {
   "$defs": {
+    "EquationState": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "disabled_count": {
+          "minimum": 0,
+          "title": "Disabled Count",
+          "type": "integer"
+        },
+        "linked_to_file": {
+          "title": "Linked To File",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "count",
+        "disabled_count",
+        "linked_to_file"
+      ],
+      "title": "EquationState",
+      "type": "object"
+    },
     "FeatureInfo": {
       "additionalProperties": false,
       "properties": {
@@ -101,6 +127,17 @@
           ],
           "default": null,
           "title": "Configuration"
+        },
+        "equations": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EquationState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "features": {
           "items": {

@@ -2,6 +2,23 @@
 
 All notable changes to Mechra are recorded here.
 
+## [0.2.0-dev.7] — 2026-09-11 (Equations preflight and composer fix candidate)
+
+- Recognize Equations (`EqnFolder`) in both feature policies; separately read actual equation/disabled counts and equation-file linking through SOLIDWORKS API before review and Apply.
+- Preserve equation-driven Parts: reject populated, linked or unreadable native equation state without changing it. Add optional strict equation context, planner guards, revision comparison and checkpoint validation.
+- Report equation state and multiple unsupported feature nodes in Check Part/Save log. Clarify that editing thickness requires successful native plate creation first.
+- Fix the invisible empty composer prompt by correcting native control z-order and focus behavior. Add corresponding Windows UI regressions.
+- Add seven equation test methods, ten shared equation-state cases, eight feature-scope cases and an HTTP contract regression. Update paired agent/add-in version to dev.7.
+- 35 application Python methods, five audit regression methods and source/schema/lexical checks passed here. Full dev.7 HTTP/schema suite, C# build/tests, WinForms harness and live SOLIDWORKS create/edit remain pending. See `docs/VALIDATION_DEV7.md`.
+
+## [0.2.0-dev.6 build fix 1] — 2026-09-11
+
+- Fix missing namespace-closing brace in `UI/WelcomeCardFactory.cs`, which caused CS1513 during the user's Windows build. The prior source audit did not check C# syntax and missed this error.
+- Add a lexical delimiter audit across production/test C# files, with regressions for missing braces, comments and literals. It explicitly remains weaker than a C# compiler.
+- Reproduce the failure against the original dev.6 ZIP; corrected 18-file delimiter audit and five audit regression tests pass locally.
+- User log now confirms 13 PowerShell files parse, 18 synthetic process/health checks pass, all 34 Python methods pass, agent starts and HTTP smoke passes. C# build stopped at CS1513 before C# tests, UI tests or registration.
+- Keep version 0.2.0-dev.6 and the existing agent contract; the code fix changes one closing brace. Rebuild and run the native gates before claiming success.
+
 ## [0.2.0-dev.6] — 2026-09-11 (frontend regression candidate)
 
 - Address defects reported in dev.5 screenshots: compact header/welcome, explicit pane regions, separate editor/action rectangles and no native white editor scrollbar.
