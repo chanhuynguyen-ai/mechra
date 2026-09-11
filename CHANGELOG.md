@@ -2,6 +2,18 @@
 
 All notable changes to Mechra are recorded here.
 
+## [0.2.0-dev.3] — 2026-09-11 (upgrade and preflight hotfix candidate)
+
+- Fixed invalid PowerShell variable interpolation before a colon in setup.
+- Added `install.ps1` with persistent setup transcript and read-only diagnostic report on success/failure.
+- Added exact process executable/argv and immediate venv-parent ownership validation; retained refusal of unrelated listeners.
+- Added `-PreviousProjectRoot`, early Administrator check and registration path/assembly/version readback.
+- Added native PowerShell parsing plus 18 prepared process ownership/health assertions; automatic setup gate on Windows.
+- Create requests in Parts with existing model features now explain `File > New > Part` before producing a plan; C# still rechecks actual geometry at Apply.
+- Task Pane log export includes the actual loaded DLL path.
+- 20 Python test methods passed here, including 14 measurement vectors; source audit and compileall passed.
+- Full HTTP/schema suite could not run in the resumed environment due to missing dependencies and blocked installation. PowerShell/C#/Windows/SOLIDWORKS acceptance remains pending. See `docs/VALIDATION_DEV3.md`.
+
 ## [0.2.0-dev.2] — 2026-09-10 (development candidate)
 
 ### Changed

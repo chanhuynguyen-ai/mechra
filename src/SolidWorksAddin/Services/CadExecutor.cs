@@ -45,7 +45,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 return Fail("The active Part or its model state changed. Generate and review a new plan.");
             ModelDoc2 model = _swApp.IActiveDoc2;
             if (model == null || model.GetType() != (int)swDocumentTypes_e.swDocPART)
-                return Fail("Open a SOLIDWORKS Part first.");
+                return Fail("Chọn File > New > Part trong SOLIDWORKS, rồi gửi lại yêu cầu.");
             if (model.IsOpenedReadOnly()) return Fail("The active Part is read-only.");
             if (model.SketchManager.ActiveSketch != null)
                 return Fail("Exit sketch edit mode before applying a plan.");
@@ -134,7 +134,7 @@ namespace SwCursor.SolidWorksAddin.Services
             {
                 if (solids != 0 || FindFeature(model, PlateExtrudeName) != null
                     || FindFeature(model, PlateSketchName) != null || FindLastSketchFeature(model) != null)
-                    return "Create requires a blank Part without existing bodies or sketches.";
+                    return "Part này đã có hình hoặc sketch. Chọn File > New > Part, rồi gửi lại lệnh tạo plate. Bản v0.2 cần một Part trống.";
                 if (FindFirstReferencePlane(model) == null) return "No reference plane is available.";
             }
             else
@@ -171,7 +171,7 @@ namespace SwCursor.SolidWorksAddin.Services
                 bool plateFeature = allowPlate && ((f.Name == PlateExtrudeName && (type == "Extrusion" || type == "Boss" || type == "BaseBody"))
                     || (f.Name == PlateSketchName && type == "ProfileFeature"));
                 if (!systemTypes.Contains(type ?? "") && !plateFeature)
-                    return "v0.2 requires a blank Part or a standalone Mechra plate. Extra feature: " + f.Name + " (" + type + ").";
+                    return "v0.2 cần Part trống để tạo mới hoặc plate do Mechra tạo để sửa chiều dày. Nếu muốn tạo plate mới: File > New > Part, rồi gửi lại yêu cầu. Feature ngoài phạm vi: " + f.Name + " (" + type + ").";
                 f = f.IGetNextFeature();
             }
             return f == null ? null : "Feature traversal limit reached; no changes were made.";
@@ -226,7 +226,7 @@ namespace SwCursor.SolidWorksAddin.Services
             if (FindFeature(model, PlateExtrudeName) != null)
                 return Fail("This Part already contains Mechra-Plate-Extrude. Edit the existing feature instead.");
             if (HasSolidBody(model))
-                return Fail("For safety, v0.2 creates a plate only in a blank Part. Open a blank Part and retry.");
+                return Fail("Part này đã có mô hình. Chọn File > New > Part, rồi gửi lại lệnh tạo plate. Tài liệu hiện tại được giữ nguyên.");
 
             double width = widthMm / 1000.0;
             double height = heightMm / 1000.0;

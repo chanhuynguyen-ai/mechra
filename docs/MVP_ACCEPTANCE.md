@@ -15,7 +15,7 @@
 
 ## Milestone v0.2 — First real vertical slice 🚧
 
-Implementation candidate is `0.2.0-dev.2`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
+Implementation candidate is `0.2.0-dev.3`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
 
 A user can type: `Create a 100 x 60 x 5 mm rectangular plate`.
 

@@ -11,6 +11,11 @@ from .models import CadOperation, CadPlan, ChatRequest, ChatResponse, DesignSpec
 NUMBER = r'[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)'
 DIMENSIONS = re.compile(rf'({NUMBER})\s*x\s*({NUMBER})(?:\s*x\s*({NUMBER}))?\s*(mm)?')
 SINGLE = re.compile(rf'({NUMBER})\s*(mm)?')
+# Context-only early rejection. C# still inspects actual bodies and features at Apply.
+BLANK_PART_TYPES = frozenset(name.casefold() for name in (
+    'HistoryFolder', 'CommentsFolder', 'FavoriteFolder', 'SelectionSetFolder', 'SensorFolder',
+    'DetailCabinet', 'MaterialFolder', 'SolidBodyFolder', 'SurfaceBodyFolder', 'RefPlane', 'OriginProfileFeature',
+))
 HELP = "v0.2 hỗ trợ tạo plate và sửa chiều dày. Ví dụ: Tạo plate 100 x 60 x 5 mm."
 
 
@@ -61,6 +66,10 @@ class MechraAgent:
         if text in ('cancel', 'huy', 'huy bo', 'reset'):
             self._pending.pop(key, None)
             return ChatResponse(message='Đã hủy yêu cầu đang chờ.')
+        blocker = self._creation_blocker(ctx)
+        if pending and SINGLE.fullmatch(text) and blocker:
+            self._pending.pop(key, None)
+            return ChatResponse(message=blocker)
         if pending and (ctx.document_type != 'part' or self._has_plate(ctx)
                         or ctx.update_stamp != pending.stamp):
             self._pending.pop(key, None)
@@ -81,8 +90,8 @@ class MechraAgent:
         if create:
             if ctx.document_type != 'part':
                 return ChatResponse(message='Hãy mở một SOLIDWORKS Part trống trước.')
-            if self._has_plate(ctx):
-                return ChatResponse(message='Part đã có Mechra-Plate-Extrude. Hãy sửa chiều dày của plate hiện tại.')
+            if blocker:
+                return ChatResponse(message=blocker)
             rest = text[create.end():]
             if not re.search(r'\b(?:plate|tam|ban)\b', rest):
                 return self._clarify(HELP)
@@ -126,6 +135,18 @@ class MechraAgent:
             return ChatResponse(message=f"Context: {ctx.document_type}, {ctx.document_title or 'chưa có tài liệu'}, "
                                 f'{len(ctx.features)} top-level features. Chẩn đoán và sửa lỗi thuộc mốc v0.3.')
         return ChatResponse(message=HELP)
+
+    @staticmethod
+    def _creation_blocker(ctx):
+        if MechraAgent._has_plate(ctx):
+            return ('Part đã có Mechra-Plate-Extrude. Hãy sửa chiều dày của plate hiện tại. '
+                    'Muốn tạo plate khác: File > New > Part, rồi gửi lại lệnh tạo plate.')
+        feature = next((f for f in ctx.features if (f.type_name or '').casefold() not in BLANK_PART_TYPES), None)
+        if feature is not None:
+            return (f'Part "{ctx.document_title or "hiện tại"}" có feature "{feature.name}"; '
+                    'v0.2 cần Part trống để tạo plate. Chọn File > New > Part, rồi gửi lại '
+                    '"Tạo plate 100 x 60 x 5 mm". Chưa tạo kế hoạch thực thi.')
+        return None
 
     @staticmethod
     def _has_plate(ctx):

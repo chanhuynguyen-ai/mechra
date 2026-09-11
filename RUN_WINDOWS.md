@@ -1,82 +1,86 @@
-# Chạy Mechra 0.2.0-dev.2 trên Windows
+# Chạy Mechra 0.2.0-dev.3 trên Windows
 
-Bản này tiếp tục mốc v0.2: **tạo plate native, sửa chiều dày, duyệt kế hoạch và kiểm chứng**. Không cần API key.
+Bản này sửa luồng nâng cấp từ Mechra-clean/dev.2 và tiếp tục mốc tạo/sửa plate native. Chưa tích hợp LLM; không cần API key.
 
-## 1. Mở bộ source mới
+## 1. Giải nén và cài bản mới
 
-Lưu công việc rồi đóng SOLIDWORKS. Giải nén `Mechra-v0.2.0-dev.2.zip` tại `C:\AI_project` để có:
-
-```text
-C:\AI_project\Mechra-v0.2.0-dev.2\README.md
-C:\AI_project\Mechra-v0.2.0-dev.2\scripts\setup-and-run.ps1
-```
-
-Mở PowerShell **Run as Administrator** để build và đăng ký add-in trong một lần. Đi vào thư mục mới:
+Lưu công việc, đóng SOLIDWORKS. Giải nén `Mechra-v0.2.0-dev.3.zip` vào `C:\AI_project`. Mở **Windows PowerShell → Run as Administrator** và chạy:
 
 ```powershell
-cd C:\AI_project\Mechra-v0.2.0-dev.2
+cd C:\AI_project\Mechra-v0.2.0-dev.3
 Set-ExecutionPolicy -Scope Process Bypass
+.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-clean
 ```
 
-Nếu agent cũ vẫn đang chạy từ `Mechra-clean`, dùng script mới để dừng đúng tiến trình đó:
+Nếu agent đang chạy từ thư mục khác, thay `PreviousProjectRoot` bằng đúng thư mục đó. Nếu không có bản cũ, bỏ tham số này. Script chỉ dừng listener được xác minh thuộc thư mục được chỉ định: kiểm tra đường dẫn Python, lệnh Uvicorn, PID/thời điểm tạo; hỗ trợ tiến trình con của Windows venv. Không dừng cả nhóm Python và không sửa Part đang mở.
+
+Bộ cài sẽ:
+
+1. Kiểm tra cú pháp PowerShell và chạy các bài kiểm tra nhận diện tiến trình bằng dữ liệu giả lập.
+2. Kiểm tra quyền Administrator, trạng thái đóng SOLIDWORKS và công cụ build.
+3. Dừng agent cũ được xác minh, chuẩn bị Python 3.11+, chạy toàn bộ test và kiểm tra HTTP.
+4. Build add-in C# x64/.NET Framework 4.8, chạy bộ test C# thuần.
+5. Đăng ký COM rồi đọc lại đường dẫn DLL và phiên bản để đối chiếu.
+6. Lưu log cài đặt và báo cáo chẩn đoán ngay cả khi một bước thất bại.
+
+Chỉ mở SOLIDWORKS khi thấy **Add-in registration verified**. Nếu dùng `-SkipRegister`, đó chỉ là build; cần đăng ký riêng bằng Administrator.
+
+Nếu SOLIDWORKS nằm ngoài vị trí thông thường:
 
 ```powershell
-.\scripts\stop-agent.ps1 -ProjectRoot C:\AI_project\Mechra-clean
+.\scripts\install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-clean -SolidWorksApiDir 'D:\SOLIDWORKS\api\redist'
 ```
 
-Script đối chiếu đường dẫn Python và dòng lệnh trước khi dừng. Nếu báo tiến trình không xác minh được, đóng cửa sổ agent cũ rồi chạy lại. Không dùng lệnh dừng toàn bộ Python.
+## 2. Thử tạo plate
 
-## 2. Chạy kiểm thử, build và đăng ký
+Mở SOLIDWORKS → **Tools → Add-Ins → Mechra**. Giao diện mới có **Mechra / Native CAD**, log chào **MECHRA v0.2.0-dev.3** và các nút **Model / New chat / Save log**.
+
+1. Chọn **File → New → Part** để mở một Part trống, một configuration. `tesst.SLDPRT` trong ảnh đã có `Boss-Extrude1`, vì vậy không đáp ứng điều kiện tạo plate mới.
+2. Gửi `Tạo plate 100 x 60 x 5 mm`.
+3. Xem **REVIEW PLAN** rồi bấm **Apply plan**.
+4. Kiểm tra có `Mechra-Plate-Sketch`, `Mechra-Plate-Extrude` và kết quả **VERIFIED**, thể tích **30.000 mm³**.
+5. Gửi `Đổi chiều dày thành 8 mm`, xem kế hoạch rồi **Apply plan**.
+6. Kiểm tra chiều dày **8 mm**, thể tích **48.000 mm³**; feature Extrude hiện tại được chỉnh sửa.
+7. Bấm **Save log** và lưu Part bằng SOLIDWORKS khi kết quả đúng.
+
+Nếu Part có feature ngoài phạm vi, Mechra trả lời cách mở Part mới ngay từ bước nhận lệnh. Bộ thực thi C# vẫn kiểm tra mô hình thực tế tại thời điểm Apply.
+
+Thử hỏi lại kích thước trên một Part mới: `Tạo plate 100 x 60 mm`, rồi trả lời `5 mm`.
+
+## 3. Nếu vẫn lỗi hoặc thấy giao diện cũ
+
+Bộ cài tạo hai loại file trong thư mục `.runtime` của bản mới:
+
+- `install-YYYYMMDD-HHMMSS.log`: toàn bộ log cài/build/đăng ký.
+- `diagnostics.json`: phiên bản dự kiến, agent health, listener/tiến trình cha, DLL đã build và đăng ký COM 64-bit.
+
+Gửi hai file này để xác định lỗi. Có thể tạo lại báo cáo chỉ đọc bằng:
 
 ```powershell
-.\scripts\setup-and-run.ps1
+.\scripts\doctor.ps1 -PreviousProjectRoot C:\AI_project\Mechra-clean
 ```
 
-Script sẽ kiểm tra Python 3.11+, tạo môi trường Python của máy này, cài dependencies, chạy bộ test, kiểm tra agent qua HTTP, build C#, chạy các kiểm tra C# thuần và đăng ký add-in khi PowerShell có quyền Administrator.
+Báo cáo đăng ký đúng không chứng minh DLL đã được SOLIDWORKS nạp. Đối chiếu phiên bản trong lời chào Task Pane và **Save log**; log này chứa đường dẫn DLL thực sự đang chạy.
 
-Nếu SOLIDWORKS nằm ngoài đường dẫn thông thường:
+Nếu báo port 8765 không xác minh được, script giữ nguyên tiến trình. Chạy `doctor.ps1` bằng Administrator để lấy thông tin listener trước khi xử lý tiếp. Không dùng `Stop-Process -Name python` hoặc dừng PID chỉ dựa vào cổng.
 
-```powershell
-.\scripts\setup-and-run.ps1 -SolidWorksApiDir 'D:\SOLIDWORKS\api\redist'
-```
-
-Nếu chỉ muốn thử agent trước:
+## 4. Các lệnh riêng
 
 ```powershell
-.\scripts\setup-and-run.ps1 -AgentOnly
-```
+# Chỉ chạy agent/test HTTP, không build CAD
+.\scripts\install.ps1 -AgentOnly
 
-`-AgentOnly` không build hoặc chạy SolidWorks. Không dùng kết quả này làm bằng chứng đã tạo CAD thành công.
+# Kiểm tra cú pháp và nhận diện tiến trình bằng dữ liệu giả lập
+.\scripts\test-powershell.ps1
 
-## 3. Thử trong SOLIDWORKS
+# Đăng ký lại DLL đã build, khi SOLIDWORKS đã đóng; cần Administrator
+.\scripts\register-addin.ps1
 
-Mở SOLIDWORKS → **Tools → Add-Ins → Mechra**. Tạo một **Part trống, một configuration**.
-
-1. Gửi `Tạo plate 100 x 60 x 5 mm`.
-2. Xem thẻ **REVIEW PLAN**. Lúc này chưa tạo hình.
-3. Bấm **Apply plan**.
-4. Kiểm tra `Mechra-Plate-Sketch` và `Mechra-Plate-Extrude`, cùng trạng thái **VERIFIED** trong chat.
-5. Gửi `Đổi chiều dày thành 8 mm`, xem kế hoạch rồi bấm **Apply plan**.
-6. Thể tích mục tiêu đổi từ **30.000 mm³** sang **48.000 mm³**; feature Extrude hiện tại được chỉnh sửa.
-7. Dùng **Save log** để lưu kết quả nếu cần kiểm tra lỗi. Sau khi xác nhận đúng, lưu Part bằng SOLIDWORKS.
-
-Thử thêm trên Part mới: `Tạo plate 100 x 60 mm`, rồi trả lời `5 mm`. Nếu bạn đổi Part hoặc chỉnh mô hình trước khi Apply, hãy lập kế hoạch mới.
-
-## 4. Dừng và mở lại agent
-
-```powershell
+# Dừng đúng agent của thư mục hiện tại
 .\scripts\stop-agent.ps1
+
+# Chạy lại agent
 .\scripts\run-agent.ps1
 ```
 
-Chạy agent hiện log trong cửa sổ hiện tại (khi port 8765 trống):
-
-```powershell
-.\scripts\run-agent.ps1 -Foreground
-```
-
-Nếu agent không lên, đọc `.runtime\agent-error.log`. Nếu build lỗi, giữ nguyên thông báo MSBuild/C# đầy đủ. Không sửa kiểu đoán tên API trong một dòng.
-
-## 5. Đưa vào repo sau khi thử
-
-Giữ repo `C:\AI_project\Mechra-clean` trong lúc thử bản mới. Khi kiểm tra thực tế đạt yêu cầu, chuyển source thay đổi vào nhánh `dev`, giữ nguyên `.git`; không đưa `.venv`, `.runtime`, `bin`, `obj` hay Interop DLL vào Git. Không gắn tag `v0.2.0` trước khi hoàn thành [bài kiểm tra thực tế](docs/V02_TEST_PLAN.md).
+Giữ repo `C:\AI_project\Mechra-clean` trong lúc thử. Sau khi các bài kiểm tra thực tế đạt yêu cầu, chuyển source vào nhánh `dev`; không đưa môi trường Python, log runtime, `bin`, `obj` hoặc Interop DLL vào Git. Chưa gắn tag `v0.2.0` khi [các bước kiểm thử SOLIDWORKS](docs/V02_TEST_PLAN.md) còn chưa đạt.

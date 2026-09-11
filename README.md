@@ -2,7 +2,9 @@
 
 A mechanical design copilot embedded in the SOLIDWORKS Task Pane.
 
-**Current package: 0.2.0-dev.2 — development candidate, pending live SOLIDWORKS acceptance.**
+**Current package: 0.2.0-dev.3 — development candidate, pending live SOLIDWORKS acceptance.**
+
+Dev.3 fixes upgrade/setup diagnostics, registration checks and early guidance for a nonblank Part. See [Windows instructions](RUN_WINDOWS.md).
 
 This candidate builds the first deterministic text-to-native-Part workflow:
 
@@ -18,7 +20,7 @@ This candidate builds the first deterministic text-to-native-Part workflow:
 Read [RUN_WINDOWS.md](RUN_WINDOWS.md). Python 3.11+, SOLIDWORKS, Visual Studio Build Tools and the .NET Framework 4.8 targeting pack are required for the add-in.
 
 ```powershell
-.\scripts\setup-and-run.ps1
+.\scripts\install.ps1
 ```
 
 Open a blank Part, enable Mechra, then send:
@@ -61,7 +63,7 @@ cd ../..
 python scripts/smoke-http.py
 ```
 
-[Validation report](docs/VALIDATION_DEV2.md) separates completed Python/HTTP checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
+[Validation report](docs/VALIDATION_DEV3.md) separates completed Python/HTTP checks from the pending C# build and actual CAD tests. [Live test steps](docs/V02_TEST_PLAN.md) define acceptance. `main` remains the accepted milestone; test candidates on `dev` or an isolated source folder before tagging a release.
 
 ## Project map
 

@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 import unittest
 from pydantic import ValidationError
-from jsonschema import Draft202012Validator
 from app.models import CadPlan, CadVerificationRequest, ChatRequest
 from app.agent import MechraAgent
 from app.verification import verify
@@ -38,6 +37,7 @@ class ContractTests(unittest.TestCase):
                 self.assertEqual(passed,case['passed'])
 
     def test_json_schemas_and_emitted_payloads(self):
+        from jsonschema import Draft202012Validator
         for path in (SHARED/'contracts').glob('*.json'):
             schema=json.loads(path.read_text());Draft202012Validator.check_schema(schema)
         validator=Draft202012Validator(json.loads((SHARED/'contracts/cad-plan.schema.json').read_text()))

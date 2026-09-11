@@ -1,21 +1,24 @@
 {
-  "candidate": "0.2.0-dev.2",
+  "candidate": "0.2.0-dev.3",
   "runtime": {
-    "python": "3.12.14"
+    "python": "3.12.14",
+    "pydantic": "2.13.5"
   },
   "completed": {
-    "unittest_methods_passed": 23,
+    "planner_test_methods_passed": 18,
+    "contract_verification_methods_passed": 2,
     "shared_measurement_vectors": 14,
-    "real_http_smoke": "passed",
     "source_audit": "passed",
     "python_compileall": "passed"
   },
-  "pending": [
-    "C# compiler and .NET Framework build",
-    "C# pure test executable on Windows",
-    "SOLIDWORKS native create/edit/rebuild",
-    "Task Pane visual test",
-    "native Undo and failure rollback live verification"
-  ],
+  "not_completed": {
+    "full_python_suite": "FastAPI/Uvicorn/jsonschema unavailable; dependency installation blocked",
+    "real_http_smoke": "not run successfully in this resumed environment",
+    "powershell_parser_and_tests": "runtime unavailable",
+    "windows_process_migration": "Windows unavailable",
+    "csharp_compile_and_tests": "compiler unavailable",
+    "com_registration_readback": "Windows unavailable",
+    "solidworks_create_edit_undo_ui": "SOLIDWORKS unavailable"
+  },
   "cad_live_pass_claimed": false
 }

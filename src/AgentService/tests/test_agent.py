@@ -89,6 +89,32 @@ class AgentTests(unittest.TestCase):
         self.assertIsNone(self.ask('5 mm', context=with_plate).plan)
         self.assertIsNone(self.ask('create plate 100 x 60 x 5 mm', context=with_plate).plan)
 
+    def test_existing_user_geometry_is_rejected_before_plan(self):
+        for name, kind in [('Boss-Extrude1', 'Extrusion'), ('Sketch1', 'ProfileFeature'),
+                           ('Imported1', 'Imported'), ('UnknownFeature', 'Unknown')]:
+            with self.subTest(kind=kind):
+                context = self.context.model_copy(update={'document_title': 'tesst.SLDPRT',
+                    'features': [FeatureInfo(name=name, type_name=kind)]})
+                result = self.ask('Tạo một plate 100 x 60 x 5 mm', context=context)
+                self.assertIsNone(result.plan)
+                self.assertIn(name, result.message)
+                self.assertIn('File > New > Part', result.message)
+
+    def test_blank_template_folders_and_planes_do_not_block_create(self):
+        from app.agent import BLANK_PART_TYPES
+        context = self.context.model_copy(update={'features': [
+            FeatureInfo(name=f'localized-{i}', type_name=kind)
+            for i, kind in enumerate(BLANK_PART_TYPES)]})
+        self.assertIsNotNone(self.ask('create plate 100 x 60 x 5 mm', context=context).plan)
+
+    def test_added_geometry_cancels_pending_even_with_same_stamp(self):
+        self.ask('create plate 100 x 60 mm')
+        context = self.context.model_copy(update={'features': [FeatureInfo(name='Boss-Extrude1', type_name='Extrusion')]})
+        result = self.ask('5 mm', context=context)
+        self.assertIsNone(result.plan)
+        self.assertIn('File > New > Part', result.message)
+        self.assertIsNone(self.ask('5 mm').plan)
+
     def test_cancel_and_new_intent_abandon_pending_spec(self):
         for interruption in ['hủy', 'cancel', 'check model', 'create plate 200 x 80 x 6 mm']:
             self.ask('create plate 100 x 60 mm')

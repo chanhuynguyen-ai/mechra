@@ -4,7 +4,7 @@
 Native SOLIDWORKS add-in, Task Pane, model context, local agent boundary, persistent-reference foundation and shared contracts. Live-tested in SOLIDWORKS 2025 SP1.2.
 
 ## v0.2.0 — Text → Native Part 🚧
-Candidate `0.2.0-dev.2` includes reviewed execution, strict contracts, scoped clarification and local verification/rollback. Python and real HTTP tests pass; C# build and live SOLIDWORKS acceptance are pending. First deterministic CAD mutation vertical slice.
+Candidate `0.2.0-dev.3` adds upgrade diagnostics, verified registration and early nonblank-Part guidance to the reviewed create/edit workflow. Twenty Python test methods pass locally; full HTTP/schema rerun, PowerShell/C# and live SOLIDWORKS acceptance remain pending. Details: `VALIDATION_DEV3.md`.
 
 Acceptance target: `Create a 100 x 60 x 5 mm plate` produces an editable native sketch + extrusion; `change thickness to 8 mm` edits the existing design; rebuild and measured verification pass.
 

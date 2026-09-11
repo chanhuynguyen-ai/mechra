@@ -1,11 +1,12 @@
 # Mechra v0.2 live acceptance
 
-Candidate: **0.2.0-dev.2**. Record actual observations and attach the exported Task Pane log. No item below is automatically passed by the Python tests.
+Candidate: **0.2.0-dev.3**. Record actual observations and attach the exported Task Pane log. No item below is automatically passed by the Python tests.
 
 | Gate | Steps | Required observation | Status |
 |---|---|---|---|
-| Environment | Run `scripts/setup-and-run.ps1` with SOLIDWORKS closed | Python/HTTP tests pass; C# build has no errors; pure C# runner passes; registration succeeds | Pending |
-| Load | Start SOLIDWORKS 2025 SP1.2 and enable Mechra | Task Pane loads and displays the current Part | Pending |
+| Environment | Run `scripts/install.ps1 -PreviousProjectRoot C:\AI_project\Mechra-clean` with SOLIDWORKS closed | PowerShell parser/ownership checks pass; old agent migration verified; Python/HTTP tests pass; C# build has no errors; pure C# runner passes; registration path/version verified | Pending |
+| Load | Start SOLIDWORKS 2025 SP1.2 and enable Mechra | Task Pane welcome shows v0.2.0-dev.3; Model/New chat/Save log are visible; exported log identifies the expected DLL | Pending |
+| Existing user Part | Send create in tesst.SLDPRT with Boss-Extrude1 | No create plan; File > New > Part guidance; original model stays unchanged | Pending |
 | Plan | New blank Part; send `Tạo plate 100 x 60 x 5 mm` | Review card appears; no geometry is created before Apply | Pending |
 | Cancel | Cancel a generated plan | Part remains unchanged | Pending |
 | Create | Generate again and Apply | Native rectangle sketch, editable width/height dimensions and native extrusion; VERIFIED with 100/60/5 mm and 30,000 mm³ | Pending |

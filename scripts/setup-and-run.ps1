@@ -2,7 +2,8 @@ param(
     [ValidateSet('Debug','Release')][string]$Configuration='Debug',
     [switch]$SkipRegister,
     [switch]$AgentOnly,
-    [string]$SolidWorksApiDir
+    [string]$SolidWorksApiDir,
+    [string]$PreviousProjectRoot
 )
 . (Join-Path $PSScriptRoot 'common.ps1')
 $root = Split-Path -Parent $PSScriptRoot
@@ -13,14 +14,19 @@ $expectedVersion = ([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
 Push-Location $root
 try {
     Write-Step 'Checking prerequisites'
+    & (Join-Path $PSScriptRoot 'test-powershell.ps1')
     $python = Find-Python
     if (!$AgentOnly) {
         if (Get-Process SLDWORKS -ErrorAction SilentlyContinue) { throw 'Close SOLIDWORKS before rebuilding the add-in, then rerun this script.' }
+        if (!$SkipRegister -and !(Test-Admin)) { throw 'Open Windows PowerShell as Administrator, then rerun setup. Use -SkipRegister only for an intentional build without registration.' }
         $api = Find-SolidWorksApiDir $SolidWorksApiDir
         $msbuild = Find-MSBuild
         $net48 = Join-Path ${env:ProgramFiles(x86)} 'Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\mscorlib.dll'
         if (!(Test-Path -LiteralPath $net48)) { throw '.NET Framework 4.8 targeting pack is missing.' }
         Write-Host "SOLIDWORKS API: $api"
+    }
+    if ($PreviousProjectRoot) {
+        & (Join-Path $PSScriptRoot 'stop-agent.ps1') -ProjectRoot $PreviousProjectRoot
     }
     Write-Step 'Preparing Python environment'
     $valid = $false
@@ -48,9 +54,7 @@ try {
     } finally { Pop-Location }
     Write-Step 'Starting the matching local agent'
     $health = Get-AgentHealth
-    $match = $health -and $health.PSObject.Properties['service'] -and $health.service -eq 'mechra-agent' -and
-        $health.PSObject.Properties['version'] -and $health.version -eq $expectedVersion -and
-        $health.PSObject.Properties['build_id'] -and $health.build_id -eq $expectedBuild
+    $match = Test-MatchingAgent $health $expectedVersion $expectedBuild
     if (!$match) {
         Stop-OwnedAgent $venvPython
         $runtime = Join-Path $root '.runtime'
@@ -60,7 +64,7 @@ try {
         for ($i=0; $i -lt 30; $i++) {
             Start-Sleep -Milliseconds 200
             $health = Get-AgentHealth
-            if ($health -and $health.PSObject.Properties['build_id'] -and $health.build_id -eq $expectedBuild -and $health.service -eq 'mechra-agent') { $ready = $true; break }
+            if (Test-MatchingAgent $health $expectedVersion $expectedBuild) { $ready = $true; break }
             if ($started.HasExited) { break }
         }
         if (!$ready) { throw "Agent startup failed. Read $runtime\agent-error.log" }
@@ -74,13 +78,10 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Add-in build failed.' }
         & (Join-Path $PSScriptRoot 'test-csharp.ps1') -MSBuildPath $msbuild
         if (!$SkipRegister) {
-            if (Test-Admin) { & (Join-Path $PSScriptRoot 'register-addin.ps1') -Configuration $Configuration -SolidWorksApiDir $api }
-            else {
-                Write-Host 'Build succeeded. Registration requires an Administrator PowerShell:' -ForegroundColor Yellow
-                Write-Host ".\scripts\register-addin.ps1 -Configuration $Configuration -SolidWorksApiDir `"$api`""
-            }
+            & (Join-Path $PSScriptRoot 'register-addin.ps1') -Configuration $Configuration -SolidWorksApiDir $api
         }
     }
-    Write-Host "`nMechra $expectedVersion: agent tests and HTTP smoke test passed." -ForegroundColor Green
-    if (!$AgentOnly) { Write-Host 'Open SOLIDWORKS -> blank Part -> Mechra. Review the plan and click Apply plan.' }
+    Write-Host "`nMechra ${expectedVersion}: agent tests and HTTP smoke test passed." -ForegroundColor Green
+    if (!$AgentOnly -and !$SkipRegister) { Write-Host 'Add-in registration verified. Open SOLIDWORKS -> File > New > Part -> Mechra -> Review plan -> Apply plan.' }
+    elseif (!$AgentOnly) { Write-Host 'Build only: registration was skipped. Run scripts\register-addin.ps1 as Administrator before opening SOLIDWORKS.' -ForegroundColor Yellow }
 } finally { Pop-Location }

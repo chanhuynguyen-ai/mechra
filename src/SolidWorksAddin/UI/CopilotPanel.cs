@@ -35,7 +35,7 @@ namespace SwCursor.SolidWorksAddin.UI
             var title = new Label { Text = "Mechra  /  Native CAD", Dock = DockStyle.Top, Height = 44,
                 Padding = new Padding(12, 12, 0, 0), ForeColor = Color.White,
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
-            _status = new Label { Text = "Ready - v0.2.0-dev.2", Dock = DockStyle.Top, Height = 30,
+            _status = new Label { Text = "Ready - v0.2.0-dev.3", Dock = DockStyle.Top, Height = 30,
                 Padding = new Padding(12, 5, 4, 0), ForeColor = Color.FromArgb(125, 206, 171) };
             var tools = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(6), WrapContents = true };
             _check = MakeButton("Model", 65); _check.Click += (_, __) => ShowModelContext();
@@ -78,8 +78,8 @@ namespace SwCursor.SolidWorksAddin.UI
 
         private void Welcome()
         {
-            Append("MECHRA", "Tạo và sửa plate native trong SOLIDWORKS.\n"
-                + "1. Mở Part trống.\n2. Nhập: Tạo plate 100 x 60 x 5 mm.\n"
+            Append("MECHRA v0.2.0-dev.3", "Tạo và sửa plate native trong SOLIDWORKS.\n"
+                + "1. File > New > Part để mở Part trống.\n2. Nhập: Tạo plate 100 x 60 x 5 mm.\n"
                 + "3. Xem kế hoạch và bấm Apply plan.\n4. Nhập: Đổi chiều dày thành 8 mm.\n\n"
                 + "v0.2 dùng bộ lập kế hoạch xác định; chưa kết nối mô hình AI. Enter để gửi, Shift+Enter để xuống dòng.");
         }
@@ -143,7 +143,9 @@ namespace SwCursor.SolidWorksAddin.UI
         {
             using (var dialog = new SaveFileDialog { Filter = "Text log (*.txt)|*.txt", FileName = "Mechra-session.txt" })
                 if (dialog.ShowDialog(this) == DialogResult.OK)
-                    try { File.WriteAllText(dialog.FileName, _conversation.Text, System.Text.Encoding.UTF8); }
+                    try { File.WriteAllText(dialog.FileName, "Mechra " + typeof(CopilotPanel).Assembly.GetName().Version
+                        + "\r\nLoaded DLL: " + typeof(CopilotPanel).Assembly.Location
+                        + "\r\n\r\n" + _conversation.Text, System.Text.Encoding.UTF8); }
                     catch (Exception ex) { Append("ERROR", ex.Message); }
         }
         private void SetBusy(bool busy)

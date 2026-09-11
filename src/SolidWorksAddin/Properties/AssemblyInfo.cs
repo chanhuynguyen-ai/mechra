@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Mechra")]
 [assembly: ComVisible(true)]
 [assembly: Guid("7E9C5544-8D64-43E3-AE85-C92AD2D4499F")]
-[assembly: AssemblyVersion("0.2.0.2")]
-[assembly: AssemblyFileVersion("0.2.0.2")]
+[assembly: AssemblyVersion("0.2.0.3")]
+[assembly: AssemblyFileVersion("0.2.0.3")]
 
-[assembly: AssemblyInformationalVersion("0.2.0-dev.2")]
+[assembly: AssemblyInformationalVersion("0.2.0-dev.3")]
