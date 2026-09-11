@@ -44,13 +44,8 @@ namespace SwCursor.SolidWorksAddin.Services
             if (!ModelRevision.Same(reviewedContext, _context.Capture()))
                 return Fail("The active Part or its model state changed. Generate and review a new plan.");
             ModelDoc2 model = _swApp.IActiveDoc2;
-            if (model == null || model.GetType() != (int)swDocumentTypes_e.swDocPART)
-                return Fail("Chọn File > New > Part trong SOLIDWORKS, rồi gửi lại yêu cầu.");
-            if (model.IsOpenedReadOnly()) return Fail("The active Part is read-only.");
-            if (model.SketchManager.ActiveSketch != null)
-                return Fail("Exit sketch edit mode before applying a plan.");
-            if (model.GetConfigurationCount() != 1)
-                return Fail("v0.2 operates on a Part with one configuration only.");
+            error = PartStateIssue(model);
+            if (error != null) return Fail(error);
             CadOperation op = plan.operations[0];
             error = Preflight(model, op);
             if (error != null) return Fail(error);
@@ -121,6 +116,44 @@ namespace SwCursor.SolidWorksAddin.Services
             return result;
         }
 
+        private static string PartStateIssue(ModelDoc2 model)
+        {
+            if (model == null || model.GetType() != (int)swDocumentTypes_e.swDocPART)
+                return "Chọn File > New > Part trong SOLIDWORKS, rồi gửi lại yêu cầu.";
+            if (model.IsOpenedReadOnly()) return "Part đang ở chế độ chỉ đọc. Mở bản có thể chỉnh sửa trước.";
+            if (model.SketchManager.ActiveSketch != null)
+                return "Hãy thoát chế độ sửa sketch trước khi lập kế hoạch.";
+            if (model.GetConfigurationCount() != 1)
+                return "v0.2 hỗ trợ Part có một configuration.";
+            return null;
+        }
+
+        // Read-only readiness check. Never rebuilds, changes selection, creates an
+        // undo group or writes geometry; it does not claim post-execution verification.
+        public CadReadinessReport CheckPart()
+        {
+            var report = new CadReadinessReport();
+            try
+            {
+                if (Thread.CurrentThread.ManagedThreadId != _threadId)
+                    throw new InvalidOperationException("Part inspection must run on the SOLIDWORKS UI thread.");
+                ModelDoc2 model = _swApp.IActiveDoc2;
+                string issue = PartStateIssue(model);
+                if (issue != null) { report.create_issue = report.edit_issue = issue; return report; }
+                report.document_title = model.GetTitle();
+                report.solid_bodies = BodyCount(model, swBodyType_e.swSolidBody);
+                report.surface_bodies = BodyCount(model, swBodyType_e.swSheetBody);
+                report.create_issue = Preflight(model, new CadOperation { kind = "create_plate" });
+                report.edit_issue = Preflight(model, new CadOperation { kind = "modify_plate_thickness" });
+                return report;
+            }
+            catch (Exception ex)
+            {
+                report.create_issue = report.edit_issue = "Không thể kiểm tra Part: " + ex.Message;
+                return report;
+            }
+        }
+
         private static string Preflight(ModelDoc2 model, CadOperation op)
         {
             string scopeError = ValidateFeatureScope(model, op.kind == "modify_plate_thickness");
@@ -159,19 +192,13 @@ namespace SwCursor.SolidWorksAddin.Services
 
         private static string ValidateFeatureScope(ModelDoc2 model, bool allowPlate)
         {
-            var systemTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
-                "HistoryFolder", "CommentsFolder", "FavoriteFolder", "SelectionSetFolder", "SensorFolder",
-                "DetailCabinet", "MaterialFolder", "SolidBodyFolder", "SurfaceBodyFolder", "RefPlane", "OriginProfileFeature"
-            };
             Feature f = model.IFirstFeature();
             int guard = 0;
             while (f != null && guard++ < 5000)
             {
                 string type = SafeType(f);
-                bool plateFeature = allowPlate && ((f.Name == PlateExtrudeName && (type == "Extrusion" || type == "Boss" || type == "BaseBody"))
-                    || (f.Name == PlateSketchName && type == "ProfileFeature"));
-                if (!systemTypes.Contains(type ?? "") && !plateFeature)
-                    return "v0.2 cần Part trống để tạo mới hoặc plate do Mechra tạo để sửa chiều dày. Nếu muốn tạo plate mới: File > New > Part, rồi gửi lại yêu cầu. Feature ngoài phạm vi: " + f.Name + " (" + type + ").";
+                if (!CadValidation.FeatureAllowed(new FeatureSnapshot { name = f.Name, type_name = type }, allowPlate))
+                    return "v0.2 cần Part trống để tạo mới hoặc plate do Mechra tạo để sửa chiều dày. Nếu muốn tạo plate mới: File > New > Part, rồi gửi lại yêu cầu. Feature ngoài phạm vi: " + f.Name + " (" + (type ?? "unknown") + "). Bấm Check Part rồi Save log để lưu chi tiết.";
                 f = f.IGetNextFeature();
             }
             return f == null ? null : "Feature traversal limit reached; no changes were made.";

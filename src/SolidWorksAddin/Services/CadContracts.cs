@@ -50,6 +50,17 @@ namespace SwCursor.SolidWorksAddin.Services
         public List<string> checks { get; set; } = new List<string>();
     }
 
+    public sealed class CadReadinessReport
+    {
+        public string document_title { get; set; }
+        public int solid_bodies { get; set; } = -1;
+        public int surface_bodies { get; set; } = -1;
+        public string create_issue { get; set; } = "Part has not been inspected.";
+        public string edit_issue { get; set; } = "Part has not been inspected.";
+        public bool can_create => create_issue == null;
+        public bool can_edit => edit_issue == null;
+    }
+
     public sealed class CadExecutionResult
     {
         public bool success { get; set; }

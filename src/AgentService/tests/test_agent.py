@@ -115,6 +115,44 @@ class AgentTests(unittest.TestCase):
         self.assertIn('File > New > Part', result.message)
         self.assertIsNone(self.ask('5 mm').plan)
 
+    def test_shared_feature_scope_cases(self):
+        import json
+        from pathlib import Path
+        from app.feature_policy import first_blocking_feature
+        path = Path(__file__).resolve().parents[2] / 'Shared/tests/feature-scope-cases.json'
+        for case in json.loads(path.read_text()):
+            with self.subTest(case=case['name']):
+                features = [FeatureInfo.model_validate(f) for f in case['features']]
+                accepted = first_blocking_feature(features, case['allow_plate']) is None
+                self.assertEqual(accepted, case['accepted'])
+
+    def test_design_binder_template_supports_create_and_clarification(self):
+        import json
+        from pathlib import Path
+        path = Path(__file__).resolve().parents[2] / 'Shared/tests/feature-scope-cases.json'
+        features = [FeatureInfo.model_validate(f) for f in json.loads(path.read_text())[0]['features']]
+        context = self.context.model_copy(update={'document_title': 'Part2', 'features': features})
+        direct = self.ask('Tạo plate 100 x 60 x 5 mm', context=context)
+        self.assertIsNotNone(direct.plan)
+        self.assertTrue(direct.requires_confirmation)
+        first = self.ask('Tạo plate 100 x 60 mm', context=context)
+        self.assertEqual(first.status, 'clarification_required')
+        second = self.ask('5 mm', context=context)
+        self.assertEqual(second.plan.operations[0].inputs['thickness_mm'], 5)
+        context = context.model_copy(update={'features': features + [
+            FeatureInfo(name='Mechra-Plate-Extrude', type_name='Extrusion')]})
+        edit = self.ask('Đổi chiều dày thành 8 mm', context=context)
+        self.assertEqual(edit.plan.operations[0].kind, 'modify_plate_thickness')
+
+    def test_design_binder_name_does_not_hide_real_or_unknown_geometry(self):
+        for kind in ('Extrusion', 'ProfileFeature', 'FtrFolder', 'UnexpectedType', None):
+            with self.subTest(kind=kind):
+                context = self.context.model_copy(update={'features': [FeatureInfo(name='Design Binder', type_name=kind)]})
+                result = self.ask('Tạo plate 100 x 60 x 5 mm', context=context)
+                self.assertIsNone(result.plan)
+                self.assertIn('Check Part', result.message)
+                self.assertIn(kind or 'không đọc được', result.message)
+
     def test_cancel_and_new_intent_abandon_pending_spec(self):
         for interruption in ['hủy', 'cancel', 'check model', 'create plate 200 x 80 x 6 mm']:
             self.ask('create plate 100 x 60 mm')

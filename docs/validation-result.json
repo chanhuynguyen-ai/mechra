@@ -1,24 +1,32 @@
 {
-  "candidate": "0.2.0-dev.3",
+  "candidate": "0.2.0-dev.4",
   "runtime": {
     "python": "3.12.14",
     "pydantic": "2.13.5"
   },
   "completed": {
-    "planner_test_methods_passed": 18,
+    "planner_test_methods_passed": 21,
     "contract_verification_methods_passed": 2,
+    "shared_feature_scope_cases": 16,
     "shared_measurement_vectors": 14,
     "source_audit": "passed",
     "python_compileall": "passed"
   },
-  "not_completed": {
-    "full_python_suite": "FastAPI/Uvicorn/jsonschema unavailable; dependency installation blocked",
-    "real_http_smoke": "not run successfully in this resumed environment",
-    "powershell_parser_and_tests": "runtime unavailable",
-    "windows_process_migration": "Windows unavailable",
-    "csharp_compile_and_tests": "compiler unavailable",
-    "com_registration_readback": "Windows unavailable",
-    "solidworks_create_edit_undo_ui": "SOLIDWORKS unavailable"
+  "user_evidence": {
+    "candidate": "0.2.0-dev.3",
+    "environment": "SOLIDWORKS Premium 2025 SP1.2",
+    "task_pane_loaded": true,
+    "agent_communication": true,
+    "observed_blocker": "Design Binder metadata classified as a nonblank Part",
+    "native_create_verified": false
   },
+  "pending": [
+    "Full 29-method Python HTTP/schema suite and real HTTP smoke: FastAPI/Uvicorn/jsonschema absent in resumed environment",
+    "PowerShell parser and process tests on Windows",
+    "dev.4 C# build/pure tests",
+    "dev.4 Task Pane Check Part and no-mutation live check",
+    "Native create/edit/rebuild verification",
+    "Native Undo/failure rollback"
+  ],
   "cad_live_pass_claimed": false
 }

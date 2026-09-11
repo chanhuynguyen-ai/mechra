@@ -6,16 +6,12 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from threading import RLock
 
+from .feature_policy import BLANK_PART_TYPES, first_blocking_feature
 from .models import CadOperation, CadPlan, ChatRequest, ChatResponse, DesignSpec, SpecItem
 
 NUMBER = r'[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)'
 DIMENSIONS = re.compile(rf'({NUMBER})\s*x\s*({NUMBER})(?:\s*x\s*({NUMBER}))?\s*(mm)?')
 SINGLE = re.compile(rf'({NUMBER})\s*(mm)?')
-# Context-only early rejection. C# still inspects actual bodies and features at Apply.
-BLANK_PART_TYPES = frozenset(name.casefold() for name in (
-    'HistoryFolder', 'CommentsFolder', 'FavoriteFolder', 'SelectionSetFolder', 'SensorFolder',
-    'DetailCabinet', 'MaterialFolder', 'SolidBodyFolder', 'SurfaceBodyFolder', 'RefPlane', 'OriginProfileFeature',
-))
 HELP = "v0.2 hỗ trợ tạo plate và sửa chiều dày. Ví dụ: Tạo plate 100 x 60 x 5 mm."
 
 
@@ -141,11 +137,12 @@ class MechraAgent:
         if MechraAgent._has_plate(ctx):
             return ('Part đã có Mechra-Plate-Extrude. Hãy sửa chiều dày của plate hiện tại. '
                     'Muốn tạo plate khác: File > New > Part, rồi gửi lại lệnh tạo plate.')
-        feature = next((f for f in ctx.features if (f.type_name or '').casefold() not in BLANK_PART_TYPES), None)
+        feature = first_blocking_feature(ctx.features)
         if feature is not None:
-            return (f'Part "{ctx.document_title or "hiện tại"}" có feature "{feature.name}"; '
+            return (f'Part "{ctx.document_title or "hiện tại"}" có feature "{feature.name}" '
+                    f'(type: {feature.type_name or "không đọc được"}); '
                     'v0.2 cần Part trống để tạo plate. Chọn File > New > Part, rồi gửi lại '
-                    '"Tạo plate 100 x 60 x 5 mm". Chưa tạo kế hoạch thực thi.')
+                    '"Tạo plate 100 x 60 x 5 mm". Nếu đây là Part mới, bấm Check Part rồi Save log để kiểm tra type của feature.')
         return None
 
     @staticmethod

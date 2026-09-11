@@ -8,6 +8,22 @@ namespace SwCursor.SolidWorksAddin.Services
     // Pure contract/measurement logic. No COM calls; tested by tests/CadValidationTests.cs.
     public static class CadValidation
     {
+        // Metadata/template nodes are classified by API type, never by display name.
+        private static readonly HashSet<string> TemplateFeatureTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
+            "HistoryFolder", "CommentsFolder", "FavoriteFolder", "SelectionSetFolder", "SensorFolder",
+            "DetailCabinet", "MaterialFolder", "SolidBodyFolder", "SurfaceBodyFolder", "RefPlane", "OriginProfileFeature",
+            "DocsFolder", "EnvFolder"
+        };
+
+        public static bool FeatureAllowed(FeatureSnapshot feature, bool allowPlate)
+        {
+            if (feature == null) return false;
+            string type = feature.type_name ?? "";
+            if (TemplateFeatureTypes.Contains(type)) return true;
+            return allowPlate && ((feature.name == "Mechra-Plate-Extrude" && (type == "Extrusion" || type == "Boss" || type == "BaseBody"))
+                || (feature.name == "Mechra-Plate-Sketch" && type == "ProfileFeature"));
+        }
+
         public static bool Positive(double value) => !double.IsNaN(value) && !double.IsInfinity(value) && value > 0;
         public static bool Dimension(double value) => Positive(value) && value <= 10000;
 

@@ -2,6 +2,16 @@
 
 All notable changes to Mechra are recorded here.
 
+## [0.2.0-dev.4] — 2026-09-11 (template compatibility and readiness candidate)
+
+- Fixed the false rejection of Design Binder (`DocsFolder`) and environment metadata (`EnvFolder`) in otherwise blank Parts, in both Python planning and native C# preflight.
+- Kept feature-type classification independent of displayed names; real sketches/bodies/unknown types and generic feature folders remain subject to the existing guards.
+- Added 16 explicit shared feature-scope cases used by Python and prepared C# tests; included a metadata template in the Windows and local HTTP smoke tests.
+- Added read-only Check Part with create/edit readiness, body counts and feature-type diagnostics.
+- Reused native preflight before showing REVIEW PLAN, and still recheck at Apply.
+- User screenshot confirms dev.3 loaded in SOLIDWORKS 2025 SP1.2 and exposed the metadata bug. It does not establish successful CAD creation.
+- 23 Python test methods passed locally, covering 16 feature-scope and 14 measurement fixtures; source audit/compileall passed. Dev.4 HTTP/schema full suite, PowerShell, C# and live CAD gates remain pending in this environment. See `docs/VALIDATION_DEV4.md`.
+
 ## [0.2.0-dev.3] — 2026-09-11 (upgrade and preflight hotfix candidate)
 
 - Fixed invalid PowerShell variable interpolation before a colon in setup.

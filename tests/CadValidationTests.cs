@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Script.Serialization;
 using SwCursor.SolidWorksAddin.Services;
 
@@ -9,6 +10,13 @@ public sealed class VerificationCase
     public string name { get; set; }
     public CadVerificationSnapshot snapshot { get; set; }
     public bool passed { get; set; }
+}
+public sealed class FeatureScopeCase
+{
+    public string name { get; set; }
+    public List<FeatureSnapshot> features { get; set; }
+    public bool allow_plate { get; set; }
+    public bool accepted { get; set; }
 }
 public static class CadValidationTests
 {
@@ -47,9 +55,12 @@ public static class CadValidationTests
             Check(!ModelRevision.Same(null,after),"no reviewed document");
             foreach (var item in new JavaScriptSerializer().Deserialize<List<VerificationCase>>(File.ReadAllText(args[0])))
                 Check(CadValidation.Verify(item.snapshot).passed==item.passed,"verification: "+item.name);
+            foreach (var item in new JavaScriptSerializer().Deserialize<List<FeatureScopeCase>>(File.ReadAllText(args[1])))
+                Check(item.features.All(feature => CadValidation.FeatureAllowed(feature, item.allow_plate)) == item.accepted,
+                    "feature scope: " + item.name);
             var invalid=new CadVerificationSnapshot {measured_volume_mm3=double.NaN};
             Check(!CadValidation.Verify(invalid).passed,"nonfinite measurements");
-            Console.WriteLine("PASS: "+_count+" C# contract, document-revision and verification checks. No SOLIDWORKS COM calls.");
+            Console.WriteLine("PASS: "+_count+" C# contract, document-revision, feature-scope and verification checks. No SOLIDWORKS COM calls.");
             return 0;
         } catch(Exception ex) { Console.Error.WriteLine("FAIL: "+ex.Message); return 1; }
     }

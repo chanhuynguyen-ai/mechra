@@ -1,0 +1,618 @@
+[
+  {
+    "name": "blank_template_with_design_binder_and_environment",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "localized_metadata_names",
+    "features": [
+      {
+        "name": "Tai lieu",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Anh sang",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Mat phang",
+        "type_name": "RefPlane"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "metadata_type_case_insensitive",
+    "features": [
+      {
+        "name": "Binder",
+        "type_name": "docsfolder"
+      },
+      {
+        "name": "Lighting",
+        "type_name": "ENVFOLDER"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  },
+  {
+    "name": "extrusion_renamed_design_binder",
+    "features": [
+      {
+        "name": "Design Binder",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "unknown_type_named_design_binder",
+    "features": [
+      {
+        "name": "Design Binder",
+        "type_name": "UnexpectedType"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "missing_type_named_design_binder",
+    "features": [
+      {
+        "name": "Design Binder",
+        "type_name": null
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "template_plus_user_extrusion",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Boss-Extrude1",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "template_plus_sketch",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Sketch1",
+        "type_name": "ProfileFeature"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "template_plus_imported_body",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Imported1",
+        "type_name": "Imported"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "create_in_existing_mechra_plate",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Sketch",
+        "type_name": "ProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "edit_mechra_plate_with_metadata",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Sketch",
+        "type_name": "ProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": true,
+    "accepted": true
+  },
+  {
+    "name": "edit_absorbed_sketch_root_not_listed",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      }
+    ],
+    "allow_plate": true,
+    "accepted": true
+  },
+  {
+    "name": "edit_with_downstream_cut",
+    "features": [
+      {
+        "name": "History",
+        "type_name": "HistoryFolder"
+      },
+      {
+        "name": "Comments",
+        "type_name": "CommentsFolder"
+      },
+      {
+        "name": "Design Binder",
+        "type_name": "DocsFolder"
+      },
+      {
+        "name": "Sensors",
+        "type_name": "SensorFolder"
+      },
+      {
+        "name": "Annotations",
+        "type_name": "DetailCabinet"
+      },
+      {
+        "name": "Lights, Cameras and Scene",
+        "type_name": "EnvFolder"
+      },
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      },
+      {
+        "name": "Surface Bodies",
+        "type_name": "SurfaceBodyFolder"
+      },
+      {
+        "name": "Material",
+        "type_name": "MaterialFolder"
+      },
+      {
+        "name": "Front Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Top Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Right Plane",
+        "type_name": "RefPlane"
+      },
+      {
+        "name": "Origin",
+        "type_name": "OriginProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Sketch",
+        "type_name": "ProfileFeature"
+      },
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Extrusion"
+      },
+      {
+        "name": "Cut-Extrude1",
+        "type_name": "Cut"
+      }
+    ],
+    "allow_plate": true,
+    "accepted": false
+  },
+  {
+    "name": "generic_folder_is_not_template_metadata",
+    "features": [
+      {
+        "name": "Design Binder",
+        "type_name": "FtrFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": false
+  },
+  {
+    "name": "wrong_named_mechra_feature",
+    "features": [
+      {
+        "name": "Mechra-Plate-Extrude",
+        "type_name": "Imported"
+      }
+    ],
+    "allow_plate": true,
+    "accepted": false
+  },
+  {
+    "name": "body_folder_alone_does_not_prove_body_count",
+    "features": [
+      {
+        "name": "Solid Bodies",
+        "type_name": "SolidBodyFolder"
+      }
+    ],
+    "allow_plate": false,
+    "accepted": true
+  }
+]

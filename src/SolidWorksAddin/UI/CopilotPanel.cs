@@ -35,10 +35,10 @@ namespace SwCursor.SolidWorksAddin.UI
             var title = new Label { Text = "Mechra  /  Native CAD", Dock = DockStyle.Top, Height = 44,
                 Padding = new Padding(12, 12, 0, 0), ForeColor = Color.White,
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
-            _status = new Label { Text = "Ready - v0.2.0-dev.3", Dock = DockStyle.Top, Height = 30,
+            _status = new Label { Text = "Ready - v0.2.0-dev.4", Dock = DockStyle.Top, Height = 30,
                 Padding = new Padding(12, 5, 4, 0), ForeColor = Color.FromArgb(125, 206, 171) };
             var tools = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(6), WrapContents = true };
-            _check = MakeButton("Model", 65); _check.Click += (_, __) => ShowModelContext();
+            _check = MakeButton("Check Part", 91); _check.Click += (_, __) => ShowModelContext();
             _reset = MakeButton("New chat", 78); _reset.Click += (_, __) => ResetChat();
             _export = MakeButton("Save log", 76); _export.Click += (_, __) => ExportLog();
             tools.Controls.AddRange(new Control[] { _check, _reset, _export });
@@ -78,8 +78,8 @@ namespace SwCursor.SolidWorksAddin.UI
 
         private void Welcome()
         {
-            Append("MECHRA v0.2.0-dev.3", "Tạo và sửa plate native trong SOLIDWORKS.\n"
-                + "1. File > New > Part để mở Part trống.\n2. Nhập: Tạo plate 100 x 60 x 5 mm.\n"
+            Append("MECHRA v0.2.0-dev.4", "Tạo và sửa plate native trong SOLIDWORKS.\n"
+                + "1. Mở Part trống và bấm Check Part.\n2. Nhập: Tạo plate 100 x 60 x 5 mm.\n"
                 + "3. Xem kế hoạch và bấm Apply plan.\n4. Nhập: Đổi chiều dày thành 8 mm.\n\n"
                 + "v0.2 dùng bộ lập kế hoạch xác định; chưa kết nối mô hình AI. Enter để gửi, Shift+Enter để xuống dòng.");
         }
@@ -93,15 +93,18 @@ namespace SwCursor.SolidWorksAddin.UI
                 ModelContextSnapshot before = _context.Capture();
                 AgentReply reply = await _agent.ChatAsync(text, before);
                 if (IsDisposed || Disposing) return;
-                Append("MECHRA", reply.message ?? string.Empty);
                 if (reply.action == "execute_cad_plan")
                 {
                     string error = CadValidation.ValidatePlan(reply.plan);
                     if (error != null || !reply.requires_confirmation) throw new InvalidOperationException(error ?? "Plan review is required.");
                     if (!ModelRevision.Same(before, _context.Capture()))
                     { Status("Model changed - send the request again"); Append("MODEL", "Part đã thay đổi trong lúc lập kế hoạch. Hãy gửi lại yêu cầu."); return; }
-                    _pending = reply.plan; _reviewedContext = before;
                     CadOperation op = reply.plan.operations[0];
+                    CadReadinessReport readiness = _executor.CheckPart();
+                    string issue = op.kind == "create_plate" ? readiness.create_issue : readiness.edit_issue;
+                    if (issue != null) { Append("PART CHECK", issue); Status("Part chưa đáp ứng điều kiện - xem hướng dẫn"); return; }
+                    Append("MECHRA", reply.message ?? string.Empty);
+                    _pending = reply.plan; _reviewedContext = before;
                     string dimensions = op.kind == "create_plate"
                         ? string.Format(CultureInfo.InvariantCulture, "Rộng: {0} mm | Cao: {1} mm | Dày: {2} mm\r\nMặt phẳng: tham chiếu đầu tiên", op.inputs["width_mm"], op.inputs["height_mm"], op.inputs["thickness_mm"])
                         : string.Format(CultureInfo.InvariantCulture, "Chiều dày mới: {0} mm\r\nGiữ chiều dài và chiều rộng hiện tại.", op.inputs["thickness_mm"]);
@@ -110,7 +113,7 @@ namespace SwCursor.SolidWorksAddin.UI
                     Append("PLAN", reply.plan.summary + "\n" + dimensions);
                     _planPanel.Visible = true; Status("Plan ready - review dimensions and apply");
                 }
-                else Status("Waiting for your next message");
+                else { Append("MECHRA", reply.message ?? string.Empty); Status("Waiting for your next message"); }
             } catch (Exception ex) { Append("ERROR", ex.Message); Status("Request failed - check the local agent"); }
             finally { if (!IsDisposed && !Disposing) SetBusy(false); }
         }
@@ -135,8 +138,19 @@ namespace SwCursor.SolidWorksAddin.UI
         private void ResetChat() { ClearPlan(); _agent.ResetSession(); _conversation.Clear(); _input.Clear(); Welcome(); Status("New conversation ready"); }
         private void ShowModelContext()
         {
-            try { var c = _context.Capture(); Append("MODEL", c.document_type == "none" ? "Chưa có tài liệu đang mở."
-                : c.document_title + " / " + c.document_type + " / " + c.configuration + "\n" + string.Join("\n", c.features.Select(f => f.name + " (" + f.type_name + ")"))); }
+            try {
+                ClearPlan();
+                var c = _context.Capture();
+                CadReadinessReport report = _executor.CheckPart();
+                Append("PART CHECK", (c.document_title ?? "Chưa có tài liệu")
+                    + " / " + c.document_type + " / " + c.configuration
+                    + "\nSolid bodies: " + (report.solid_bodies < 0 ? "chưa đọc được" : report.solid_bodies.ToString())
+                    + " | Surface bodies: " + (report.surface_bodies < 0 ? "chưa đọc được" : report.surface_bodies.ToString())
+                    + "\nTạo plate: " + (report.can_create ? "Sẵn sàng lập kế hoạch" : report.create_issue)
+                    + "\nSửa chiều dày: " + (report.can_edit ? "Có thể lập kế hoạch sửa plate Mechra" : report.edit_issue));
+                Append("FEATURE DETAILS", string.Join("\n", c.features.Select(f => f.name + " [" + (f.type_name ?? "unknown") + "]")));
+                Status(report.can_create || report.can_edit ? "Part đã kiểm tra - hãy gửi yêu cầu" : "Part chưa đáp ứng điều kiện");
+            }
             catch (Exception ex) { Append("ERROR", ex.Message); }
         }
         private void ExportLog()

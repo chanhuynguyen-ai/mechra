@@ -14,9 +14,9 @@ tree=ast.parse((ROOT/'src/AgentService/app/main.py').read_text())
 app_version=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign)
     and any(isinstance(t,ast.Name) and t.id=='VERSION' for t in n.targets))
 assert app_version==version,(app_version,version)
-from app.agent import BLANK_PART_TYPES
-executor=(ROOT/'src/SolidWorksAddin/Services/CadExecutor.cs').read_text()
-block=executor.split('var systemTypes =',1)[1].split('};',1)[0]
+from app.feature_policy import BLANK_PART_TYPES
+policy=(ROOT/'src/SolidWorksAddin/Services/CadValidation.cs').read_text()
+block=policy.split('TemplateFeatureTypes =',1)[1].split('};',1)[0]
 assert {x.casefold() for x in re.findall(r'"([A-Za-z]+)"',block)}==BLANK_PART_TYPES, 'Planner/executor blank-template types drifted' 
 assert version in (ROOT/'src/SolidWorksAddin/Properties/AssemblyInfo.cs').read_text()
 assert version in (ROOT/'src/SolidWorksAddin/UI/CopilotPanel.cs').read_text()

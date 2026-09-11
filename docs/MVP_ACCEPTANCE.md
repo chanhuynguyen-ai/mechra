@@ -15,7 +15,9 @@
 
 ## Milestone v0.2 — First real vertical slice 🚧
 
-Implementation candidate is `0.2.0-dev.3`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
+Implementation candidate is `0.2.0-dev.4`; the checkboxes below remain open until the user live-tests them in SOLIDWORKS.
+
+Observed progress: the user screenshot confirms dev.3 Task Pane loading and agent communication on SOLIDWORKS 2025 SP1.2. Geometry was blocked by a metadata classification error. Dev.4 addresses that error; actual create/edit acceptance is still open.
 
 A user can type: `Create a 100 x 60 x 5 mm rectangular plate`.
 
